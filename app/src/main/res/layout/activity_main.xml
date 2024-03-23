@@ -7,13 +7,17 @@
 
         <variable
             name="mainViewModel"
-            type="com.example.preventmistakes.MainViewModel" />
+            type="com.example.preventmistakes.view_model.MainViewModel" />
+
+        <variable
+            name="activity"
+            type="com.example.preventmistakes.activity.MainActivity" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
+        tools:context=".activity.MainActivity"
         android:orientation="vertical"
         android:layout_weight="5">
 
@@ -63,14 +67,13 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="발신 차단 연락처"
-                android:visibility="@{mainViewModel.permissionVisibleList[0]}"/>
+                android:text="발신 차단 연락처" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="연락처 보기"
-                android:visibility="@{mainViewModel.permissionVisibleList[1]}"/>
+                android:onClick="@{() -> activity.goToPhoneDirActivity()}"/>
         </LinearLayout>
 
         <LinearLayout
@@ -83,13 +86,15 @@
                 android:id="@+id/text1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="연락처 접근 권한 허용 필요"/>
+                android:text="연락처 접근 권한 허용 필요"
+                android:visibility="@{mainViewModel.phonePermissionVisibility}" />
 
             <TextView
                 android:id="@+id/text2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="전화 권한 허용 필요"/>
+                android:text="전화 권한 허용 필요"
+                android:visibility= "@{mainViewModel.readPermissionVisibility}" />
 
         </LinearLayout>
 
