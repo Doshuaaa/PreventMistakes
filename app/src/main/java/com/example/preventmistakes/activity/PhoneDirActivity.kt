@@ -12,6 +12,12 @@ import com.example.preventmistakes.databinding.ActivityPhoneDirBinding
 import com.example.preventmistakes.view_model.PhoneDirViewModel
 import com.example.preventmistakes.view_model.PhoneDirViewModelFactory
 import com.example.preventmistakes.view_model.PhoneViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class PhoneDirActivity : AppCompatActivity() {
 
@@ -25,7 +31,13 @@ class PhoneDirActivity : AppCompatActivity() {
 
         val phoneViewModel = PhoneViewModel(this.application)
 
-        phoneDirViewModel.setPhoneList(this)
+        runBlocking {
+            CoroutineScope(Dispatchers.IO).launch {
+                phoneDirViewModel.setPhoneList(this@PhoneDirActivity)
+            }.join()
+            delay(3000)
+        }
+
         val phoneList = phoneDirViewModel.phoneList.value!!
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_phone_dir)

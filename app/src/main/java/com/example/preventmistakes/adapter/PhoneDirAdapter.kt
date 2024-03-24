@@ -27,12 +27,20 @@ class PhoneDirAdapter(private val phoneList: List<Phone>, private val phoneViewM
             binding.data = phone
         }
 
-        fun isBlocked(): Int {
+        fun isBlocked(phone: Phone) {
             val phone = binding.data
 
-            var visibility = View.VISIBLE
+            if(phone != null) {
+                var visibility = View.VISIBLE
 
-            runBlocking {
+                if(phone.blocked) {
+                    binding.blockedTextView.visibility = View.VISIBLE
+                } else {
+                    binding.blockedTextView.visibility = View.GONE
+                }
+            }
+
+//            runBlocking {
 //                CoroutineScope(Dispatchers.IO).launch {
 //                    if(phone != null) {
 //                        if(phoneViewModel.isBlocked(phone.number)) {
@@ -45,9 +53,9 @@ class PhoneDirAdapter(private val phoneList: List<Phone>, private val phoneViewM
 //                    }
 //                    else visibility = View.GONE
 //                }
-            }
-            binding.blockedTextView.visibility = visibility
-            return visibility
+//            }
+//            binding.blockedTextView.visibility = visibility
+            //return visibility
         }
     }
 
@@ -61,8 +69,9 @@ class PhoneDirAdapter(private val phoneList: List<Phone>, private val phoneViewM
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.isBlocked()
+
         val phone = phoneList[position]
+        holder.isBlocked(phone)
         holder.onBind(phone)
     }
 }

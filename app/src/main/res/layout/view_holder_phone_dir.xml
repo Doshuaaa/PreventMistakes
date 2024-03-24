@@ -51,7 +51,6 @@
                 android:text="차단"
                 android:textColor="#ffffff"
                 android:gravity="center"
-
                 />
 
             <CheckBox

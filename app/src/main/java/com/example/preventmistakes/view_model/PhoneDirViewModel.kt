@@ -39,15 +39,21 @@ class PhoneDirViewModel(application: Application) : ViewModel() {
                 val numberIndex = cursor.getColumnIndex(projection[2])
                 val name = cursor.getString(nameIndex)
                 val number = cursor.getString(numberIndex).replace("-","")
+                var isBlocked = true
 
-                val job = CoroutineScope(Dispatchers.IO).launch {
-                    numberList.add(Phone(name, number, repository.isBlocked(number)))
+                runBlocking {
+                    val job =  CoroutineScope(Dispatchers.Default).launch {
+                        isBlocked = repository.isBlocked(number)
+                    }
+                    //job.start()
+                    job.join()
+                    //job.cancel()
                 }
-
+                numberList.add(Phone(name, number, isBlocked))
             }
         }
         cursor?.close()
         numberList.sortBy { it.name }
-        _phoneList.value = numberList
+        _phoneList.postValue(numberList)
     }
 }
