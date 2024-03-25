@@ -11,7 +11,17 @@
             name="viewHolder"
             type="com.example.preventmistakes.adapter.PhoneDirAdapter.ViewHolder" />
 
+        <import type="android.view.View"/>
+        <variable
+            name="blocked"
+            type="java.lang.Boolean" />
+
+        <variable
+            name="showCheckBox"
+            type="java.lang.Boolean" />
+
     </data>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,17 +33,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:gravity="center"
             android:text="@{data.name}"
-            android:textSize="20sp"
-            android:gravity="center" />
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:textSize="18sp"
             android:gravity="center"
-            android:text="@{data.number}"/>
+            android:text="@{data.number}"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -46,18 +56,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_round_blocked_phone"
-                android:textSize="13sp"
+                android:gravity="center"
                 android:padding="8dp"
                 android:text="차단"
                 android:textColor="#ffffff"
-                android:gravity="center"
-                />
+                android:textSize="13sp"
+                android:visibility="@{blocked ? View.VISIBLE : View.GONE, default=gone}"/>
 
             <CheckBox
+                android:id="@+id/block_check_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:visibility="gone"/>
+                android:visibility="@{showCheckBox ? View.VISIBLE : View.GONE, default=gone}" />
         </LinearLayout>
     </LinearLayout>
 

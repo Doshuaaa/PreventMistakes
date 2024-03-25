@@ -1,21 +1,22 @@
 package com.example.preventmistakes.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.preventmistakes.PhoneDirEntity
 import com.example.preventmistakes.databinding.ViewHolderPhoneDirBinding
 import com.example.preventmistakes.model.Phone
 import com.example.preventmistakes.view_model.PhoneViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
-class PhoneDirAdapter(private val phoneList: List<Phone>, private val phoneViewModel: PhoneViewModel)
+class PhoneDirAdapter(
+    private val phoneList: List<Phone>,
+    private val phoneViewModel: PhoneViewModel,
+)
     : RecyclerView.Adapter<PhoneDirAdapter.ViewHolder>() {
 
     private lateinit var binding: ViewHolderPhoneDirBinding
+    var addBtnActivated = false
+
     inner class ViewHolder(private val binding: ViewHolderPhoneDirBinding): RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -24,38 +25,22 @@ class PhoneDirAdapter(private val phoneList: List<Phone>, private val phoneViewM
         }
 
         fun onBind(phone: Phone) {
+
             binding.data = phone
-        }
+            binding.blocked = phone.blocked
 
-        fun isBlocked(phone: Phone) {
-            val phone = binding.data
+            if(addBtnActivated) {
 
-            if(phone != null) {
-                var visibility = View.VISIBLE
-
-                if(phone.blocked) {
-                    binding.blockedTextView.visibility = View.VISIBLE
-                } else {
-                    binding.blockedTextView.visibility = View.GONE
+                if(!phone.blocked) {
+                    binding.showCheckBox = true
                 }
+            } else {
+                if(binding.blockCheckBox.isChecked) {
+                    phoneViewModel.blockPhone(PhoneDirEntity(phone.number, phone.name))
+                    binding.blocked = true
+                }
+                binding.showCheckBox = false
             }
-
-//            runBlocking {
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    if(phone != null) {
-//                        if(phoneViewModel.isBlocked(phone.number)) {
-//                            visibility = View.VISIBLE
-//                            //binding.blockedTextView.visibility = View.VISIBLE
-//                        } else {
-//                            visibility = View.GONE
-//                            //binding.blockedTextView.visibility = View.GONE
-//                        }
-//                    }
-//                    else visibility = View.GONE
-//                }
-//            }
-//            binding.blockedTextView.visibility = visibility
-            //return visibility
         }
     }
 
@@ -71,7 +56,10 @@ class PhoneDirAdapter(private val phoneList: List<Phone>, private val phoneViewM
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val phone = phoneList[position]
-        holder.isBlocked(phone)
         holder.onBind(phone)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 }

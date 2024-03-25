@@ -18,9 +18,9 @@ class PhoneDirViewModel(application: Application) : ViewModel() {
 
     private val _phoneList = MutableLiveData<List<Phone>>()
     val phoneList get() = _phoneList
-    val repository = PhoneRepository(application)
+    private val repository = PhoneRepository(application)
 
-    fun setPhoneList(context: Context) {
+    fun setPhoneList(context: Context): ArrayList<Phone> {
         val resolver = context.contentResolver!!
         val phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
 
@@ -29,9 +29,8 @@ class PhoneDirViewModel(application: Application) : ViewModel() {
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Phone.NUMBER
         )
-
-        val cursor = resolver.query(phoneUri, projection, null, null, null)
         val numberList = arrayListOf<Phone>()
+        val cursor = resolver.query(phoneUri, projection, null, null, null)
 
         if(cursor != null) {
             while(cursor.moveToNext()) {
@@ -39,21 +38,18 @@ class PhoneDirViewModel(application: Application) : ViewModel() {
                 val numberIndex = cursor.getColumnIndex(projection[2])
                 val name = cursor.getString(nameIndex)
                 val number = cursor.getString(numberIndex).replace("-","")
-                var isBlocked = true
-
-                runBlocking {
-                    val job =  CoroutineScope(Dispatchers.Default).launch {
-                        isBlocked = repository.isBlocked(number)
-                    }
-                    //job.start()
-                    job.join()
-                    //job.cancel()
-                }
+                val isBlocked = repository.isBlocked(number)
                 numberList.add(Phone(name, number, isBlocked))
             }
         }
         cursor?.close()
         numberList.sortBy { it.name }
-        _phoneList.postValue(numberList)
+
+
+        return numberList
+    }
+
+    fun confirmPhoneList(numberList: ArrayList<Phone>) {
+        _phoneList.value = numberList
     }
 }
