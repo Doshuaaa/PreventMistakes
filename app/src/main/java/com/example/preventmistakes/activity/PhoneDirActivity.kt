@@ -38,12 +38,12 @@ class PhoneDirActivity : AppCompatActivity() {
             phoneDirViewModel.confirmPhoneList(numberList)
         }
 
-        val phoneList = phoneDirViewModel.phoneList.value!!
+        val phoneList = phoneDirViewModel.phoneList.value?.toMutableList()!!
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_phone_dir)
         binding.lifecycleOwner = this
         binding.activity = this
-        phoneDirAdapter = PhoneDirAdapter(phoneList, phoneViewModel)
+        phoneDirAdapter = PhoneDirAdapter(phoneList, phoneViewModel, this)
 
         binding.phoneDirRecyclerView.apply {
 
@@ -51,6 +51,36 @@ class PhoneDirActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@PhoneDirActivity)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(phoneDirAdapter.selectedItem != -1) {
+            runBlocking {
+                CoroutineScope(Dispatchers.IO).launch {
+                    phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem] =
+                        Phone(phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].name,
+                            phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].number,
+                            phoneDirViewModel.updatePhone(phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].number))
+                }.join()
+            }
+            phoneDirAdapter.notifyItemChanged(phoneDirAdapter.selectedItem)
+        }
+    }
+
+//    private fun setPhoneList() {
+//        runBlocking {
+//            var numberList = arrayListOf<Phone>()
+//            CoroutineScope(Dispatchers.IO).launch {
+//                numberList = phoneDirViewModel.setPhoneList(this@PhoneDirActivity)
+//            }.join()
+//            phoneDirViewModel.confirmPhoneList(numberList)
+//        }
+//
+//        val phoneList = phoneDirViewModel.phoneList.value!!
+//        return phoneList
+//    }
+
 
     fun addOrCommitListener() {
         val button = binding.addOrCommitButton

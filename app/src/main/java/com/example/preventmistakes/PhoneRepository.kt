@@ -15,6 +15,7 @@ class PhoneRepository(application: Application) {
         return phones
     }
 
+
     fun isBlocked(phoneNumber: String) : Boolean{
 
         return when(phoneDao.isPhoneBlocked(phoneNumber)) {

@@ -1,21 +1,25 @@
 package com.example.preventmistakes.adapter
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.preventmistakes.PhoneDirEntity
+import com.example.preventmistakes.activity.PhoneDetailsActivity
 import com.example.preventmistakes.databinding.ViewHolderPhoneDirBinding
 import com.example.preventmistakes.model.Phone
 import com.example.preventmistakes.view_model.PhoneViewModel
 
 class PhoneDirAdapter(
-    private val phoneList: List<Phone>,
+    val phoneList: MutableList<Phone>,
     private val phoneViewModel: PhoneViewModel,
-)
+    private val context: Context)
     : RecyclerView.Adapter<PhoneDirAdapter.ViewHolder>() {
 
     private lateinit var binding: ViewHolderPhoneDirBinding
     var addBtnActivated = false
+    var selectedItem = -1
 
     inner class ViewHolder(private val binding: ViewHolderPhoneDirBinding): RecyclerView.ViewHolder(binding.root) {
 
@@ -24,8 +28,12 @@ class PhoneDirAdapter(
             binding.data = null
         }
 
-        fun onBind(phone: Phone) {
+        lateinit var phone: Phone
+        private var position = 0
+        fun onBind(phone: Phone, position: Int) {
 
+            this.position = position
+            this.phone = phone
             binding.data = phone
             binding.blocked = phone.blocked
 
@@ -42,6 +50,13 @@ class PhoneDirAdapter(
                 binding.showCheckBox = false
             }
         }
+
+        fun layoutListener() {
+            selectedItem = position
+            val intent = Intent(context, PhoneDetailsActivity::class.java)
+            intent.putExtra("selected_phone", Phone(phone.name, phone.number, phone.blocked))
+            context.startActivity(intent)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -56,7 +71,7 @@ class PhoneDirAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val phone = phoneList[position]
-        holder.onBind(phone)
+        holder.onBind(phone, position)
     }
 
     override fun getItemViewType(position: Int): Int {

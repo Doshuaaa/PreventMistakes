@@ -3,16 +3,10 @@ package com.example.preventmistakes.view_model
 import android.app.Application
 import android.content.Context
 import android.provider.ContactsContract
-import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.preventmistakes.PhoneRepository
 import com.example.preventmistakes.model.Phone
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class PhoneDirViewModel(application: Application) : ViewModel() {
 
@@ -51,5 +45,9 @@ class PhoneDirViewModel(application: Application) : ViewModel() {
 
     fun confirmPhoneList(numberList: ArrayList<Phone>) {
         _phoneList.value = numberList
+    }
+
+    fun updatePhone(number: String): Boolean {
+        return repository.isBlocked(number)
     }
 }
