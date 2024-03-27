@@ -65,6 +65,7 @@ class PhoneDirActivity : AppCompatActivity() {
                 }.join()
             }
             phoneDirAdapter.notifyItemChanged(phoneDirAdapter.selectedItem)
+            //phoneDirAdapter.selectedItem = -1
         }
     }
 
@@ -96,5 +97,6 @@ class PhoneDirActivity : AppCompatActivity() {
             }
         }
         phoneDirAdapter.notifyDataSetChanged()
+
     }
 }

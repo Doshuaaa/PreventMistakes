@@ -6,6 +6,9 @@
         <variable
             name="activity"
             type="com.example.preventmistakes.activity.PhoneDetailsActivity" />
+        <variable
+            name="viewModel"
+            type="com.example.preventmistakes.view_model.PhoneDetailsViewModel" />
     </data>
 
     <LinearLayout
@@ -46,7 +49,7 @@
                 android:textSize="18sp"
                 android:textColor="#ffffff"
                 android:padding="13dp"
-                android:visibility="@{activity.phone.blocked ? View.GONE : View.VISIBLE, default=gone}"
+                android:visibility="@{viewModel.isBlocked ? View.GONE : View.VISIBLE, default=gone}"
                 android:onClick="@{() -> activity.blockPhone()}"/>
 
             <androidx.appcompat.widget.AppCompatButton
@@ -58,7 +61,7 @@
                 android:textSize="18sp"
                 android:textColor="#ffffff"
                 android:padding="13dp"
-                android:visibility="@{activity.phone.blocked ? View.VISIBLE : View.GONE, default=gone}"
+                android:visibility="@{viewModel.isBlocked ? View.VISIBLE : View.GONE, default=gone}"
                 android:onClick="@{() -> activity.unblockPhone()}"/>
 
         </FrameLayout>
