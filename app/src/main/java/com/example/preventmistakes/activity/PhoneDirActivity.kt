@@ -56,31 +56,22 @@ class PhoneDirActivity : AppCompatActivity() {
         super.onResume()
 
         if(phoneDirAdapter.selectedItem != -1) {
-            runBlocking {
-                CoroutineScope(Dispatchers.IO).launch {
-                    phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem] =
-                        Phone(phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].name,
-                            phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].number,
-                            phoneDirViewModel.updatePhone(phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].number))
-                }.join()
-            }
+
+            modifyPhoneListBlocked()
+
             phoneDirAdapter.notifyItemChanged(phoneDirAdapter.selectedItem)
-            //phoneDirAdapter.selectedItem = -1
+            phoneDirAdapter.selectedItem = -1
         }
     }
 
-//    private fun setPhoneList() {
-//        runBlocking {
-//            var numberList = arrayListOf<Phone>()
-//            CoroutineScope(Dispatchers.IO).launch {
-//                numberList = phoneDirViewModel.setPhoneList(this@PhoneDirActivity)
-//            }.join()
-//            phoneDirViewModel.confirmPhoneList(numberList)
-//        }
-//
-//        val phoneList = phoneDirViewModel.phoneList.value!!
-//        return phoneList
-//    }
+    private fun modifyPhoneListBlocked() {
+        runBlocking {
+            CoroutineScope(Dispatchers.IO).launch {
+                phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].blocked =
+                    phoneDirViewModel.updatePhone(phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].number)
+            }.join()
+        }
+    }
 
 
     fun addOrCommitListener() {

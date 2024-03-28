@@ -5,5 +5,5 @@ import java.io.Serializable
 data class Phone (
     val name: String,
     val number: String,
-    val blocked: Boolean
+    var blocked: Boolean
 ) : Serializable

@@ -9,17 +9,16 @@ import com.example.preventmistakes.PhoneRepository
 class PhoneViewModel(application: Application) : ViewModel() {
 
     private val repository = PhoneRepository(application)
-    private val phones = repository.getAll()
 
-    fun getAll(): LiveData<List<PhoneDirEntity>> {
-
-        return phones
-    }
-
-    fun isBlocked(phoneNumber: String): Boolean {
-
-        return repository.isBlocked(phoneNumber)
-    }
+//    fun getAll(): LiveData<List<PhoneDirEntity>> {
+//
+//        return phones
+//    }
+//
+//    fun isBlocked(phoneNumber: String): Boolean {
+//
+//        return repository.isBlocked(phoneNumber)
+//    }
 
     fun blockPhone(phone: PhoneDirEntity) {
 

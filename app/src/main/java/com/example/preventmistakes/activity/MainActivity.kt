@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         binding.mainViewModel = mainViewModel
         binding.lifecycleOwner = this
         binding.activity = this
-        val a = mainViewModel.permissionVisibleList.value?.get(0)
         binding.text1.visibility
     }
 
@@ -69,6 +68,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goToBlockedPhoneActivity() {
-
+        val intent = Intent(this, BlockedPhoneActivity::class.java)
+        startActivity(intent)
     }
 }

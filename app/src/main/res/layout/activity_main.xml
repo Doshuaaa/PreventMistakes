@@ -67,7 +67,8 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="발신 차단 연락처" />
+                android:text="발신 차단 연락처"
+                android:onClick="@{() -> activity.goToBlockedPhoneActivity()}"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="wrap_content"

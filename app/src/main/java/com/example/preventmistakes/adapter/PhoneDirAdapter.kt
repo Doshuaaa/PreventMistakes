@@ -37,6 +37,10 @@ class PhoneDirAdapter(
             binding.data = phone
             binding.blocked = phone.blocked
 
+            setBlockedTextView()
+        }
+
+        private fun setBlockedTextView() {
             if(addBtnActivated) {
 
                 if(!phone.blocked) {
@@ -45,13 +49,16 @@ class PhoneDirAdapter(
             } else {
                 if(binding.blockCheckBox.isChecked) {
                     phoneViewModel.blockPhone(PhoneDirEntity(phone.number, phone.name))
-                    binding.blocked = true
+                    binding.blocked = true               // xml에 표시하기 위함
+                    phoneList[position].blocked = true   // details activity에 전달하기 위함
+                    binding.blockCheckBox.isChecked = false
                 }
                 binding.showCheckBox = false
             }
         }
 
         fun layoutListener() {
+
             selectedItem = position
             val intent = Intent(context, PhoneDetailsActivity::class.java)
             intent.putExtra("selected_phone", Phone(phone.name, phone.number, phone.blocked))

@@ -35,6 +35,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.PhoneDirActivity" />
+        <activity android:name=".activity.BlockedPhoneActivity"/>
     </application>
 
 </manifest>

@@ -1,17 +1,24 @@
 package com.example.preventmistakes
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import java.lang.Exception
+
 
 class PhoneRepository(application: Application) {
 
     private val phoneDataBase = PhoneDataBase.getInstance(application)!!
     private val phoneDao = phoneDataBase.phoneDao()
-    private val phones = phoneDao.getAll()
     private val isBlocked = 0
 
-    fun getAll(): LiveData<List<PhoneDirEntity>> {
+    fun getAll(): List<PhoneDirEntity> {
+
+        var phones = listOf<PhoneDirEntity>()
+        try {
+            val thread = Thread(Runnable {
+                phones = phoneDao.getAll()
+            })
+            thread.start()
+            thread.join()
+        } catch (_: Exception) { }
         return phones
     }
 
