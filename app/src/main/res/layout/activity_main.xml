@@ -40,6 +40,7 @@
                 android:layout_gravity="center"/>
 
             <Switch
+                android:id="@+id/prevent_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:switchMinWidth="120dp"
@@ -48,7 +49,8 @@
                 android:layout_gravity="center"
                 tools:ignore="UseSwitchCompatOrMaterialXml"
                 android:layout_marginTop="60dp"
-                android:layout_marginBottom="15dp"/>
+                android:layout_marginBottom="15dp"
+                android:onClick="@{() -> activity.onSwitchListener()}"/>
 
             <TextView
                 android:layout_width="wrap_content"

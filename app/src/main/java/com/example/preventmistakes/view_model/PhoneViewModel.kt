@@ -10,15 +10,14 @@ class PhoneViewModel(application: Application) : ViewModel() {
 
     private val repository = PhoneRepository(application)
 
-//    fun getAll(): LiveData<List<PhoneDirEntity>> {
-//
-//        return phones
-//    }
-//
-//    fun isBlocked(phoneNumber: String): Boolean {
-//
-//        return repository.isBlocked(phoneNumber)
-//    }
+    fun getAll(): List<PhoneDirEntity> {
+        return repository.getAll()
+    }
+
+    fun isBlocked(phoneNumber: String): Boolean {
+
+        return repository.isBlocked(phoneNumber)
+    }
 
     fun blockPhone(phone: PhoneDirEntity) {
 

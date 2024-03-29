@@ -1,35 +1,43 @@
 package com.example.preventmistakes
 
 import android.app.Application
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class PhoneRepository(application: Application) {
 
     private val phoneDataBase = PhoneDataBase.getInstance(application)!!
     private val phoneDao = phoneDataBase.phoneDao()
-    private val isBlocked = 0
 
     fun getAll(): List<PhoneDirEntity> {
 
         var phones = listOf<PhoneDirEntity>()
-        try {
-            val thread = Thread(Runnable {
+        runBlocking {
+            CoroutineScope(Dispatchers.IO).launch {
                 phones = phoneDao.getAll()
-            })
-            thread.start()
-            thread.join()
-        } catch (_: Exception) { }
+            }.join()
+        }
         return phones
     }
 
 
     fun isBlocked(phoneNumber: String) : Boolean{
 
-        return when(phoneDao.isPhoneBlocked(phoneNumber)) {
+        var isBlocked = false
+        runBlocking {
+            CoroutineScope(Dispatchers.IO).launch {
+                isBlocked = when(phoneDao.isPhoneBlocked(phoneNumber)) {
 
-            0 -> false
-            else -> true
+                    0 -> false
+                    else -> true
+                }
+            }.join()
         }
+
+        return isBlocked
     }
 
     fun blockPhone(phone: PhoneDirEntity) {

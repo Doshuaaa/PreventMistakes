@@ -15,14 +15,22 @@ class BlockedPhoneActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBlockedPhoneBinding
     private val blockedPhoneViewModel: BlockedPhoneViewModel by viewModels { BlockedPhoneViewModelFactory(application) }
+    private lateinit var blockedPhoneAdapter: BlockedPhoneAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_blocked_phone)
-
+        blockedPhoneAdapter = BlockedPhoneAdapter(blockedPhoneViewModel.blockedPhoneList, this@BlockedPhoneActivity)
         binding.apply {
-            blockedPhoneRecyclerView.adapter = BlockedPhoneAdapter(blockedPhoneViewModel.blockedPhoneList)
+            blockedPhoneRecyclerView.adapter = blockedPhoneAdapter
             blockedPhoneRecyclerView.layoutManager = LinearLayoutManager(this@BlockedPhoneActivity)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(blockedPhoneAdapter.selectedItem != -1) {
+            blockedPhoneViewModel.updateBlockedPhone(blockedPhoneAdapter, blockedPhoneAdapter.selectedItem)
         }
     }
 }
