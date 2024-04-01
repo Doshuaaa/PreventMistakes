@@ -47,6 +47,7 @@
         </activity>
         <activity android:name=".activity.PhoneDirActivity" />
         <activity android:name=".activity.BlockedPhoneActivity" />
+        <activity android:name=".activity.SearchActivity"/>
     </application>
 
 </manifest>

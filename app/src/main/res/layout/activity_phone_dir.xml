@@ -15,7 +15,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -26,12 +27,20 @@
                 android:textStyle="bold"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/add_or_commit_button"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/baseline_add_24"
+                android:onClick="@{() -> activity.goToSearchActivity()}"
+                android:layout_toStartOf="@id/add_or_commit_button"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/add_or_commit_button"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/baseline_checklist_24"
                 android:layout_alignParentEnd="true"
-                android:onClick="@{() -> activity.addOrCommitListener()}"/>
+                android:onClick="@{() -> activity.addOrCommitListener()}"
+                android:layout_alignLeft="@id/add_or_commit_button"/>
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView

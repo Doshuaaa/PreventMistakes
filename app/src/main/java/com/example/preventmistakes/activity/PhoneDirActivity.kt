@@ -1,5 +1,6 @@
 package com.example.preventmistakes.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,7 @@ class PhoneDirActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhoneDirBinding
     private val phoneDirViewModel: PhoneDirViewModel by viewModels{ PhoneDirViewModelFactory(application)}
     private lateinit var phoneDirAdapter: PhoneDirAdapter
+    private val phoneList: MutableList<Phone> by lazy { phoneDirViewModel.phoneList.value?.toMutableList()!! }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class PhoneDirActivity : AppCompatActivity() {
             phoneDirViewModel.confirmPhoneList(numberList)
         }
 
-        val phoneList = phoneDirViewModel.phoneList.value?.toMutableList()!!
+
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_phone_dir)
         binding.lifecycleOwner = this
@@ -79,7 +81,7 @@ class PhoneDirActivity : AppCompatActivity() {
 
         when(phoneDirAdapter.addBtnActivated) {
             true ->  {
-                button.background = ContextCompat.getDrawable(this, R.drawable.baseline_add_24)
+                button.background = ContextCompat.getDrawable(this, R.drawable.baseline_checklist_24)
                 phoneDirAdapter.addBtnActivated  = false
             }
             false -> {
@@ -90,4 +92,13 @@ class PhoneDirActivity : AppCompatActivity() {
         phoneDirAdapter.notifyDataSetChanged()
 
     }
+
+    fun goToSearchActivity() {
+        val intent = Intent(this, SearchActivity::class.java)
+        intent.putExtra("phone_dir_list", phoneList.toTypedArray())
+        finish()
+        startActivity(intent)
+    }
+
+
 }

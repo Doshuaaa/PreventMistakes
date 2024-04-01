@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.preventmistakes.PhoneDirEntity
-import com.example.preventmistakes.activity.BlockedPhoneActivity
 import com.example.preventmistakes.activity.PhoneDetailsActivity
-import com.example.preventmistakes.databinding.ViewHolderBlockedPhoneBinding
+import com.example.preventmistakes.databinding.ViewHolderBlockPhoneBinding
 import com.example.preventmistakes.model.Phone
 
 class BlockedPhoneAdapter(
@@ -17,10 +16,10 @@ class BlockedPhoneAdapter(
 )
     : RecyclerView.Adapter<BlockedPhoneAdapter.ViewHolder>() {
 
-    private lateinit var binding: ViewHolderBlockedPhoneBinding
+    private lateinit var binding: ViewHolderBlockPhoneBinding
     var selectedItem = -1
 
-    inner class ViewHolder(binding: ViewHolderBlockedPhoneBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(binding: ViewHolderBlockPhoneBinding) : RecyclerView.ViewHolder(binding.root) {
 
         lateinit var phone: PhoneDirEntity
         private var position = 0
@@ -43,7 +42,7 @@ class BlockedPhoneAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        binding = ViewHolderBlockedPhoneBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding = ViewHolderBlockPhoneBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 

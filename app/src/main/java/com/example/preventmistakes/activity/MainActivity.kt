@@ -18,9 +18,12 @@ import androidx.lifecycle.Observer
 import com.example.preventmistakes.R
 import com.example.preventmistakes.databinding.ActivityMainBinding
 import com.example.preventmistakes.service.BlockingCallsService
+import com.example.preventmistakes.service.SERVICE_COMMAND
+import com.example.preventmistakes.service.ServiceState
 import com.example.preventmistakes.view_model.MainViewModel
 import com.example.preventmistakes.view_model.PhoneViewModel
 import com.example.preventmistakes.view_model.PhoneViewModelFactory
+import java.lang.IllegalArgumentException
 
 const val REQUEST_PERMISSIONS = 1
 
@@ -29,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
     private val phoneViewModel: PhoneViewModel by viewModels { PhoneViewModelFactory(application) }
+    private lateinit var callReceiver: CallReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,14 +44,28 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.activity = this
 
+        callReceiver = CallReceiver()
+
         mainViewModel.isServiceRunning.observe(this, Observer {
+            val intent = Intent(this, BlockingCallsService::class.java)
             if(it) {
                 val filter = IntentFilter("android.intent.action.NEW_OUTGOING_CALL")
-                registerReceiver(CallReceiver(), filter)
-                val intent = Intent(this, BlockingCallsService::class.java)
+                registerReceiver(callReceiver, filter)
+                intent.putExtra(SERVICE_COMMAND, ServiceState.START)
                 ContextCompat.startForegroundService(this, intent)
+            } else {
+                try {
+                    unregisterReceiver(callReceiver)     // 맨처음 isServiceRunning을 초기화 하는 과정에서 호출되어 IllegalArgumentException 발생 때문에 try catch 사용
+                    intent.putExtra(SERVICE_COMMAND, ServiceState.STOP)
+                    ContextCompat.startForegroundService(this, intent)
+                } catch (_: IllegalArgumentException) { }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.setIsServiceRunning(mainViewModel.isServiceRunning(this))
     }
 
     fun onSwitchListener() {

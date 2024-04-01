@@ -1,15 +1,19 @@
 package com.example.preventmistakes
 
 import android.app.Notification
+import android.app.Notification.FOREGROUND_SERVICE_IMMEDIATE
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.preventmistakes.activity.MainActivity
 
 const val NOTIFICATION_ID = 100
+
 
 class NotificationHelper(context: Context) {
 
@@ -17,7 +21,6 @@ class NotificationHelper(context: Context) {
         const val CHANNEL_ID = "PreventMistakes00"
         const val CHANNEL_NAME = "PreventMistakes"
     }
-
 
     private val pushIntent = Intent(context, MainActivity::class.java)
     private val pendingIntent: PendingIntent = PendingIntent.getActivity(
@@ -28,14 +31,23 @@ class NotificationHelper(context: Context) {
 
     )
 
-
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val builder: NotificationCompat.Builder by lazy {
-        NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("PreventMistakes")
-            .setContentText("발신 차단 실행중")
-            .setContentIntent(pendingIntent)
-            .setSmallIcon(R.mipmap.ic_launcher)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentTitle("PreventMistakes")
+                .setContentText("발신 차단 실행중")
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
+                .setOngoing(true)
+        } else {
+            NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentTitle("PreventMistakes")
+                .setContentText("발신 차단 실행중")
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.mipmap.ic_launcher)
+        }
     }
 
     private fun createChannel() {
@@ -58,9 +70,5 @@ class NotificationHelper(context: Context) {
     }
     fun notifyNotification() {
         notificationManager.notify(NOTIFICATION_ID, builder.build())
-    }
-
-    fun cancelNotification() {
-        notificationManager.cancel(NOTIFICATION_ID)
     }
 }
