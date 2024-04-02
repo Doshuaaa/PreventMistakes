@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.preventmistakes.PhoneDirEntity
 import com.example.preventmistakes.activity.PhoneDetailsActivity
@@ -18,6 +19,7 @@ class BlockedPhoneAdapter(
 
     private lateinit var binding: ViewHolderBlockPhoneBinding
     var selectedItem = -1
+
 
     inner class ViewHolder(binding: ViewHolderBlockPhoneBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -43,6 +45,7 @@ class BlockedPhoneAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         binding = ViewHolderBlockPhoneBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding.lifecycleOwner = parent.findViewTreeLifecycleOwner()
         return ViewHolder(binding)
     }
 

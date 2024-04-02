@@ -10,7 +10,8 @@ import com.example.preventmistakes.databinding.ViewHolderResultPhoneBinding
 import com.example.preventmistakes.model.Phone
 import com.example.preventmistakes.model.PhonePosition
 
-class SearchResultAdapter(var list: List<PhonePosition>, private val context: Context) : RecyclerView.Adapter<SearchResultAdapter.ViewHolder>() {
+class SearchResultAdapter(var list: List<PhonePosition>, private val context: Context)
+    : RecyclerView.Adapter<SearchResultAdapter.ViewHolder>() {
 
     var selectedPosition = -1
     private val prefs = context.getSharedPreferences("changeable_data", Context.MODE_PRIVATE)

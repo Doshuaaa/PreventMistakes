@@ -52,6 +52,8 @@ class SearchActivity : AppCompatActivity() {
             override fun afterTextChanged(editTable: Editable) {
                 resultList = if(editTable.toString() != "") {
                     searchViewModel.searchList(editTable.toString())
+
+                    //
                 } else {
                     listOf()
                 }

@@ -54,6 +54,4 @@ class PhoneDetailsActivity : AppCompatActivity() {
             this.getSerializableExtra(key) as T?
         }
     }
-
-
 }
