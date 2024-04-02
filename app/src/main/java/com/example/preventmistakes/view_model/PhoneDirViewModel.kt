@@ -6,11 +6,13 @@ import android.provider.ContactsContract
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.preventmistakes.PhoneRepository
+import com.example.preventmistakes.adapter.PhoneDirAdapter
 import com.example.preventmistakes.model.Phone
 
 class PhoneDirViewModel(application: Application) : ViewModel() {
 
     private val _phoneList = MutableLiveData<List<Phone>>()
+
     val phoneList get() = _phoneList
     private val repository = PhoneRepository(application)
 
@@ -33,13 +35,17 @@ class PhoneDirViewModel(application: Application) : ViewModel() {
                 val name = cursor.getString(nameIndex)
                 val number = cursor.getString(numberIndex).replace("-","")
                 val isBlocked = repository.isBlocked(number)
-                numberList.add(Phone(name, number, isBlocked))
+                numberList.add(Phone(name, number, isBlocked, 0))
             }
         }
         cursor?.close()
-        numberList.sortBy { it.name }
+        numberList.sortBy {
+            it.name
+        }
 
-
+        for((i, phone) in numberList.withIndex()) {
+            phone.index = i
+        }
         return numberList
     }
 

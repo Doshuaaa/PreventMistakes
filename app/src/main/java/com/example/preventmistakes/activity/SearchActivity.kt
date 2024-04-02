@@ -1,5 +1,6 @@
 package com.example.preventmistakes.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -62,9 +63,10 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(searchAdapter.selectedPositon != -1) {
-         //   searchAdapter.list[searchAdapter.selectedPositon].phone.blocked = searchAdapter
-            searchAdapter.notifyItemChanged(searchAdapter.selectedPositon)
+        if(searchAdapter.selectedPosition != -1) {
+            val prefs = getSharedPreferences("changeable_data", Context.MODE_PRIVATE)
+            prefs.edit().putInt("changeable_phone_index",searchAdapter.list[searchAdapter.selectedPosition].phone.index).apply()
+            searchAdapter.notifyItemChanged(searchAdapter.selectedPosition)
         }
     }
 

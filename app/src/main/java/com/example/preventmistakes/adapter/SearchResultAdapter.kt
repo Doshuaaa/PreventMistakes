@@ -12,7 +12,8 @@ import com.example.preventmistakes.model.PhonePosition
 
 class SearchResultAdapter(var list: List<PhonePosition>, private val context: Context) : RecyclerView.Adapter<SearchResultAdapter.ViewHolder>() {
 
-    var selectedPositon = -1
+    var selectedPosition = -1
+    private val prefs = context.getSharedPreferences("changeable_data", Context.MODE_PRIVATE)
     inner class ViewHolder(private val binding: ViewHolderResultPhoneBinding): RecyclerView.ViewHolder(binding.root) {
 
         lateinit var phone: Phone
@@ -27,9 +28,10 @@ class SearchResultAdapter(var list: List<PhonePosition>, private val context: Co
         }
 
         fun layoutListener() {
-            selectedPositon = position
+            prefs.edit().putInt("changeable_phone_index", phone.index).apply()
+            selectedPosition = position
             val intent = Intent(context, PhoneDetailsActivity::class.java)
-            intent.putExtra("selected_phone", Phone(phone.name, phone.number, phone.blocked))
+            intent.putExtra("selected_phone", Phone(phone.name, phone.number, phone.blocked, phone.index))
             context.startActivity(intent)
         }
 

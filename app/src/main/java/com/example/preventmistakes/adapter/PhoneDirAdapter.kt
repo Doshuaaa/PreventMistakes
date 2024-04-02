@@ -18,8 +18,9 @@ class PhoneDirAdapter(
     : RecyclerView.Adapter<PhoneDirAdapter.ViewHolder>() {
 
     private lateinit var binding: ViewHolderPhoneDirBinding
+    private val prefs = context.getSharedPreferences("changeable_data", Context.MODE_PRIVATE)
     var addBtnActivated = false
-    var selectedItem = -1
+   // var selectedItem = -1
 
     inner class ViewHolder(private val binding: ViewHolderPhoneDirBinding): RecyclerView.ViewHolder(binding.root) {
 
@@ -58,10 +59,10 @@ class PhoneDirAdapter(
         }
 
         fun layoutListener() {
-
-            selectedItem = position
+            prefs.edit().putInt("changeable_phone_index", phone.index).apply()
+            //selectedItem = position
             val intent = Intent(context, PhoneDetailsActivity::class.java)
-            intent.putExtra("selected_phone", Phone(phone.name, phone.number, phone.blocked))
+            intent.putExtra("selected_phone", Phone(phone.name, phone.number, phone.blocked, phone.index))
             context.startActivity(intent)
         }
     }

@@ -16,6 +16,7 @@ class SearchViewModel : ViewModel() {
     }
 
     fun searchList(text: String): List<PhonePosition> {
+        var i = 0
         val list = mutableListOf<PhonePosition>()
         try {
             text.toInt()

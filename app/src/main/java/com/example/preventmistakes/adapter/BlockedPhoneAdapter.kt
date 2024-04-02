@@ -35,7 +35,7 @@ class BlockedPhoneAdapter(
         fun layoutListener() {
             selectedItem = position
             val intent = Intent(context, PhoneDetailsActivity::class.java)
-            intent.putExtra("selected_phone", Phone(phone.name, phone.phoneNumber, true))
+            intent.putExtra("selected_phone", Phone(phone.name, phone.phoneNumber, true, 0))
             context.startActivity(intent)
         }
     }

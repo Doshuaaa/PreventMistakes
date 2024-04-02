@@ -1,6 +1,8 @@
 package com.example.preventmistakes.activity
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +28,7 @@ class PhoneDirActivity : AppCompatActivity() {
     private val phoneDirViewModel: PhoneDirViewModel by viewModels{ PhoneDirViewModelFactory(application)}
     private lateinit var phoneDirAdapter: PhoneDirAdapter
     private val phoneList: MutableList<Phone> by lazy { phoneDirViewModel.phoneList.value?.toMutableList()!! }
+    private val prefs: SharedPreferences by lazy { getSharedPreferences("changeable_data", Context.MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +42,6 @@ class PhoneDirActivity : AppCompatActivity() {
             }.join()
             phoneDirViewModel.confirmPhoneList(numberList)
         }
-
 
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_phone_dir)
@@ -57,20 +59,28 @@ class PhoneDirActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if(phoneDirAdapter.selectedItem != -1) {
+//        if(phoneDirAdapter.selectedItem != -1) {
+//
+//            modifyPhoneListBlocked()
+//
+//            phoneDirAdapter.notifyItemChanged(phoneDirAdapter.selectedItem)
+//            phoneDirAdapter.selectedItem = -1
+//        }
 
-            modifyPhoneListBlocked()
+        val index = prefs.getInt("changeable_phone_index", -1)
 
-            phoneDirAdapter.notifyItemChanged(phoneDirAdapter.selectedItem)
-            phoneDirAdapter.selectedItem = -1
+        if(index != -1) {
+            modifyPhoneListBlocked(index)
+            phoneDirAdapter.notifyItemChanged(index)
+            prefs.edit().putInt("changeable_phone_index", -1).apply()
         }
     }
 
-    private fun modifyPhoneListBlocked() {
+    private fun modifyPhoneListBlocked(index: Int) {
         runBlocking {
             CoroutineScope(Dispatchers.IO).launch {
-                phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].blocked =
-                    phoneDirViewModel.updatePhone(phoneDirAdapter.phoneList[phoneDirAdapter.selectedItem].number)
+                phoneDirAdapter.phoneList[index].blocked =
+                    phoneDirViewModel.updatePhone(phoneDirAdapter.phoneList[index].number)
             }.join()
         }
     }
@@ -96,7 +106,7 @@ class PhoneDirActivity : AppCompatActivity() {
     fun goToSearchActivity() {
         val intent = Intent(this, SearchActivity::class.java)
         intent.putExtra("phone_dir_list", phoneList.toTypedArray())
-        finish()
+
         startActivity(intent)
     }
 
