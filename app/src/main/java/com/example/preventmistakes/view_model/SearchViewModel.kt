@@ -1,5 +1,6 @@
 package com.example.preventmistakes.view_model
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.preventmistakes.model.Phone
 import com.example.preventmistakes.model.PhonePosition
@@ -10,7 +11,13 @@ class SearchViewModel : ViewModel() {
 
     private lateinit var _phoneList: List<Phone>
 
+    private var _currNum: MutableLiveData<String> = MutableLiveData()
+    val currNum get() = _currNum
 
+
+    init {
+        _currNum.value = ""
+    }
     fun setPhoneList(list: List<Phone>) {
         _phoneList = list
     }
@@ -40,6 +47,16 @@ class SearchViewModel : ViewModel() {
 
         list.sortBy { it.index }
         return list
+    }
+
+    fun updateCurrNum(num: String) {
+
+        _currNum.value = _currNum.value + num
+    }
+
+    fun backspace() {
+
+        _currNum.value = _currNum.value!!.replaceFirst(".$".toRegex(), "")
     }
 
 }

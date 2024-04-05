@@ -113,6 +113,11 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun goToBlockingByInputNumbActivity() {
+        val intent = Intent(this, BlockingByInputNumActivity::class.java)
+        startActivity(intent)
+    }
+
     inner class CallReceiver : BroadcastReceiver() {
         override fun onReceive(p0: Context?, intent: Intent) {
 

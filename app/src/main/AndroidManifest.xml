@@ -48,6 +48,7 @@
         <activity android:name=".activity.PhoneDirActivity" />
         <activity android:name=".activity.BlockedPhoneActivity" />
         <activity android:name=".activity.SearchActivity"/>
+        <activity android:name=".activity.BlockingByInputNumActivity"/>
     </application>
 
 </manifest>

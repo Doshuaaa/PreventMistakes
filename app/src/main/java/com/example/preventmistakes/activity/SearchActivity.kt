@@ -15,11 +15,14 @@ import com.example.preventmistakes.adapter.SearchResultAdapter
 import com.example.preventmistakes.databinding.ActivitySearchBinding
 import com.example.preventmistakes.model.Phone
 import com.example.preventmistakes.model.PhonePosition
+import com.example.preventmistakes.view_model.PhoneViewModel
+import com.example.preventmistakes.view_model.PhoneViewModelFactory
 import com.example.preventmistakes.view_model.SearchViewModel
 
 class SearchActivity : AppCompatActivity() {
 
     private val searchViewModel: SearchViewModel by viewModels()
+    private val phoneViewModel: PhoneViewModel by viewModels { PhoneViewModelFactory(application) }
     private lateinit var binding: ActivitySearchBinding
     var resultList: List<PhonePosition> = listOf()
     private val searchAdapter: SearchResultAdapter by lazy { SearchResultAdapter(resultList, this) }
@@ -66,10 +69,15 @@ class SearchActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if(searchAdapter.selectedPosition != -1) {
-            val prefs = getSharedPreferences("changeable_data", Context.MODE_PRIVATE)
-            prefs.edit().putInt("changeable_phone_index",searchAdapter.list[searchAdapter.selectedPosition].phone.index).apply()
+            resetPhone()
             searchAdapter.notifyItemChanged(searchAdapter.selectedPosition)
         }
+    }
+
+    private fun resetPhone() {
+        val prefs = getSharedPreferences("changeable_data", Context.MODE_PRIVATE)
+        prefs.edit().putInt("changeable_phone_index",searchAdapter.list[searchAdapter.selectedPosition].phone.index).apply()
+        searchAdapter.list[searchAdapter.selectedPosition].phone.blocked = phoneViewModel.isBlocked(searchAdapter.list[searchAdapter.selectedPosition].phone.number)
     }
 
     private fun Intent.intentSerializable(key: String, clazz: Class<Array<Phone>>) : Array<Phone>? {

@@ -74,7 +74,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="10dp"
                 android:orientation="vertical"
                 android:onClick="@{() -> activity.goToBlockedPhoneActivity()}">
 
@@ -101,7 +100,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="10dp"
                 android:orientation="vertical"
                 android:onClick="@{() -> activity.goToPhoneDirActivity()}">
 
@@ -118,6 +116,32 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="연락처 보기"
+                    android:gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical"
+                android:onClick="@{() -> activity.goToBlockingByInputNumbActivity()}">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:background="#ffffff"
+                    android:padding="15dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/input_num" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="번호 입력으로 차단"
                     android:gravity="center"/>
 
             </LinearLayout>
