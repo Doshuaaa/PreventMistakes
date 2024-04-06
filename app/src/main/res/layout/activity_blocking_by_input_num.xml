@@ -6,6 +6,10 @@
         <variable
             name="searchViewModel"
             type="com.example.preventmistakes.view_model.SearchViewModel" />
+
+        <variable
+            name="activity"
+            type="com.example.preventmistakes.activity.BlockingByInputNumActivity" />
     </data>
     <LinearLayout
         android:orientation="vertical"
@@ -28,7 +32,7 @@
             android:textSize="40dp"
             android:singleLine="true"
             android:background="@null"
-            android:text="@{searchViewModel.currNum}"/>
+            android:text="@{searchViewModel.currNumFormatted}"/>
 
         <GridLayout
             android:layout_width="wrap_content"
@@ -141,6 +145,15 @@
                 android:onClick="@{()-> searchViewModel.backspace()}"
                 android:padding="20dp"/>
         </GridLayout>
+        
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="차단하기"
+            android:textColor="#ffffff"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/shape_block_by_num_button"
+            android:onClick="@{() -> activity.blockPhone()}"/>
     </LinearLayout>
 </layout>
 

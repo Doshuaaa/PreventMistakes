@@ -1,20 +1,25 @@
 package com.example.preventmistakes.activity
 
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.preventmistakes.PhoneDirEntity
 import com.example.preventmistakes.R
 import com.example.preventmistakes.adapter.SearchResultAdapter
 import com.example.preventmistakes.databinding.ActivityBlockingByInputNumBinding
 import com.example.preventmistakes.model.PhonePosition
 import com.example.preventmistakes.view_model.PhoneDirViewModel
 import com.example.preventmistakes.view_model.PhoneDirViewModelFactory
+import com.example.preventmistakes.view_model.PhoneViewModel
+import com.example.preventmistakes.view_model.PhoneViewModelFactory
 import com.example.preventmistakes.view_model.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +31,7 @@ class BlockingByInputNumActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBlockingByInputNumBinding
     private val phoneDirViewModel: PhoneDirViewModel by viewModels { PhoneDirViewModelFactory(application) }
     private val searchViewModel: SearchViewModel by viewModels()
+    private val phoneViewModel: PhoneViewModel by viewModels { PhoneViewModelFactory(application) }
     private var resultList: List<PhonePosition> = listOf()
     private val searchAdapter: SearchResultAdapter by lazy { SearchResultAdapter(resultList, this) }
 
@@ -39,8 +45,13 @@ class BlockingByInputNumActivity : AppCompatActivity() {
             }
         )
         binding = DataBindingUtil.setContentView(this, R.layout.activity_blocking_by_input_num)
-        binding.searchViewModel = searchViewModel
-        binding.lifecycleOwner = this
+        with(binding) {
+            searchViewModel = this@BlockingByInputNumActivity.searchViewModel
+            lifecycleOwner = this@BlockingByInputNumActivity
+            activity = this@BlockingByInputNumActivity
+        }
+
+
 
         with(binding.currNumEditText) {
             //setSelection(length())
@@ -75,4 +86,18 @@ class BlockingByInputNumActivity : AppCompatActivity() {
         })
     }
 
+    fun blockPhone() {
+        val num = searchViewModel.currNum.value
+        if(num != null && !phoneViewModel.isBlocked(num)) {
+            val dlg = AlertDialog.Builder(this)
+            with(dlg) {
+                setMessage("${searchViewModel.currNumFormatted} 차단할까요?")
+                setPositiveButton("확인"
+                ) { _, _ -> phoneViewModel.blockPhone(PhoneDirEntity(num, ""))}
+                setNegativeButton("취소"
+                ) { _, _ -> }
+                show()
+            }
+        }
+    }
 }

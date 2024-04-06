@@ -1,10 +1,12 @@
 package com.example.preventmistakes.view_model
 
+import android.telephony.PhoneNumberUtils
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.preventmistakes.model.Phone
 import com.example.preventmistakes.model.PhonePosition
 import java.lang.NumberFormatException
+import java.util.Locale
 
 class SearchViewModel : ViewModel() {
 
@@ -12,7 +14,9 @@ class SearchViewModel : ViewModel() {
     private lateinit var _phoneList: List<Phone>
 
     private var _currNum: MutableLiveData<String> = MutableLiveData()
+    private var _currNumFormatted: MutableLiveData<String> = MutableLiveData()
     val currNum get() = _currNum
+    val currNumFormatted get() = _currNumFormatted
 
 
     init {
@@ -52,6 +56,7 @@ class SearchViewModel : ViewModel() {
     fun updateCurrNum(num: String) {
 
         _currNum.value = _currNum.value + num
+        _currNumFormatted.value = PhoneNumberUtils.formatNumber(_currNum.value, Locale.getDefault().country)
     }
 
     fun backspace() {
