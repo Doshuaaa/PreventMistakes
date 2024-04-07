@@ -15,6 +15,8 @@ class SearchViewModel : ViewModel() {
 
     private var _currNum: MutableLiveData<String> = MutableLiveData()
     private var _currNumFormatted: MutableLiveData<String> = MutableLiveData()
+
+    val phoneList get() = _phoneList
     val currNum get() = _currNum
     val currNumFormatted get() = _currNumFormatted
 
@@ -22,6 +24,7 @@ class SearchViewModel : ViewModel() {
     init {
         _currNum.value = ""
     }
+
     fun setPhoneList(list: List<Phone>) {
         _phoneList = list
     }
@@ -65,4 +68,13 @@ class SearchViewModel : ViewModel() {
         _currNumFormatted.value = PhoneNumberUtils.formatNumber(_currNum.value, Locale.getDefault().country)
     }
 
+    fun getNameCorrespondingToNumber(number: String) : String{
+
+        for(phone in _phoneList) {
+            if(phone.number == number) {
+                return phone.name
+            }
+        }
+        return ""
+    }
 }

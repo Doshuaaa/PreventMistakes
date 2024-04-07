@@ -93,9 +93,18 @@ class BlockingByInputNumActivity : AppCompatActivity() {
 
         if(index != -1) {
             modifyPhoneListBlocked(index)
-            phoneDirAdapter.notifyItemChanged(index)
+            searchAdapter.notifyItemChanged(index)
             prefs.edit().putInt("changeable_phone_index", -1).apply()
         }
+    }
+
+    private fun modifyPhoneListBlocked(index: Int) {
+        try {
+            searchAdapter.list[index].phone.blocked = phoneViewModel.isBlocked(searchAdapter.list[index].phone.number)
+        } catch (e: IndexOutOfBoundsException) {
+
+        }
+
     }
 
     fun blockPhone() {
@@ -107,7 +116,9 @@ class BlockingByInputNumActivity : AppCompatActivity() {
                 with(dlg) {
                     setMessage("${searchViewModel.currNumFormatted.value} 번호를 발신 차단할까요?")
                     setPositiveButton("확인"
-                    ) { _, _ -> phoneViewModel.blockPhone(PhoneDirEntity(num, ""))}
+                    ) { _, _ ->
+                            phoneViewModel.blockPhone(PhoneDirEntity(num, searchViewModel.getNameCorrespondingToNumber(num)))
+                    }
                     setNegativeButton("취소"
                     ) { _, _ -> }
                     show()

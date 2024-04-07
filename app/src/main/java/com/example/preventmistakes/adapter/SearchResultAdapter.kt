@@ -29,7 +29,7 @@ class SearchResultAdapter(var list: List<PhonePosition>, private val context: Co
         }
 
         fun layoutListener() {
-            prefs.edit().putInt("changeable_phone_index", phone.index).apply()
+            prefs.edit().putInt("changeable_phone_index", position).apply()
             selectedPosition = position
             val intent = Intent(context, PhoneDetailsActivity::class.java)
             intent.putExtra("selected_phone", Phone(phone.name, phone.number, phone.blocked, phone.index))
