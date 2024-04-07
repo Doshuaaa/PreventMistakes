@@ -1,6 +1,8 @@
 package com.example.preventmistakes.activity
 
+import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -34,6 +36,7 @@ class BlockingByInputNumActivity : AppCompatActivity() {
     private val phoneViewModel: PhoneViewModel by viewModels { PhoneViewModelFactory(application) }
     private var resultList: List<PhonePosition> = listOf()
     private val searchAdapter: SearchResultAdapter by lazy { SearchResultAdapter(resultList, this) }
+    private val prefs: SharedPreferences by lazy { getSharedPreferences("changeable_data", Context.MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +53,6 @@ class BlockingByInputNumActivity : AppCompatActivity() {
             lifecycleOwner = this@BlockingByInputNumActivity
             activity = this@BlockingByInputNumActivity
         }
-
-
 
         with(binding.currNumEditText) {
             //setSelection(length())
@@ -74,9 +75,7 @@ class BlockingByInputNumActivity : AppCompatActivity() {
 
             override fun afterTextChanged(editTable: Editable) {
                 resultList = if(editTable.toString() != "") {
-                    searchViewModel.searchList(editTable.toString())
-
-                    //
+                    searchViewModel.searchList(editTable.toString().replace("-", ""))
                 } else {
                     listOf()
                 }
@@ -86,17 +85,41 @@ class BlockingByInputNumActivity : AppCompatActivity() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+
+
+        val index = prefs.getInt("changeable_phone_index", -1)
+
+        if(index != -1) {
+            modifyPhoneListBlocked(index)
+            phoneDirAdapter.notifyItemChanged(index)
+            prefs.edit().putInt("changeable_phone_index", -1).apply()
+        }
+    }
+
     fun blockPhone() {
         val num = searchViewModel.currNum.value
-        if(num != null && !phoneViewModel.isBlocked(num)) {
-            val dlg = AlertDialog.Builder(this)
-            with(dlg) {
-                setMessage("${searchViewModel.currNumFormatted} 차단할까요?")
-                setPositiveButton("확인"
-                ) { _, _ -> phoneViewModel.blockPhone(PhoneDirEntity(num, ""))}
-                setNegativeButton("취소"
-                ) { _, _ -> }
-                show()
+        if(num != null) {
+
+            if(!phoneViewModel.isBlocked(num)) {
+                val dlg = AlertDialog.Builder(this)
+                with(dlg) {
+                    setMessage("${searchViewModel.currNumFormatted.value} 번호를 발신 차단할까요?")
+                    setPositiveButton("확인"
+                    ) { _, _ -> phoneViewModel.blockPhone(PhoneDirEntity(num, ""))}
+                    setNegativeButton("취소"
+                    ) { _, _ -> }
+                    show()
+                }
+            } else {
+                val dlg = AlertDialog.Builder(this)
+                with(dlg) {
+                    setMessage("${searchViewModel.currNumFormatted.value}는 이미 차단된 번호입니다.")
+                    setPositiveButton("확인"
+                    ) { _, _ -> }
+                    show()
+                }
             }
         }
     }

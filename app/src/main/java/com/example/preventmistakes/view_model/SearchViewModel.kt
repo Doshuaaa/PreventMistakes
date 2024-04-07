@@ -62,6 +62,7 @@ class SearchViewModel : ViewModel() {
     fun backspace() {
 
         _currNum.value = _currNum.value!!.replaceFirst(".$".toRegex(), "")
+        _currNumFormatted.value = PhoneNumberUtils.formatNumber(_currNum.value, Locale.getDefault().country)
     }
 
 }
