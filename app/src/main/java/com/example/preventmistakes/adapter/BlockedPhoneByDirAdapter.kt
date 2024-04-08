@@ -21,11 +21,12 @@ class BlockedPhoneByDirAdapter(
     var selectedItem = -1
 
 
-    inner class ViewHolder(binding: ViewHolderBlockPhoneByDirBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ViewHolderBlockPhoneByDirBinding) : RecyclerView.ViewHolder(binding.root) {
 
         lateinit var phone: PhoneDirEntity
         private var position = 0
         fun onBind(phone: PhoneDirEntity, position: Int) {
+
 
             this.phone = phone
             this.position = position
@@ -54,6 +55,8 @@ class BlockedPhoneByDirAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.name.text = blockedList[position].name
+        holder.binding.number.text = blockedList[position].phoneNumber
         holder.onBind(blockedList[position], position)
     }
 }
