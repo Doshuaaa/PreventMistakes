@@ -101,10 +101,7 @@ class BlockingByInputNumActivity : AppCompatActivity() {
     private fun modifyPhoneListBlocked(index: Int) {
         try {
             searchAdapter.list[index].phone.blocked = phoneViewModel.isBlocked(searchAdapter.list[index].phone.number)
-        } catch (e: IndexOutOfBoundsException) {
-
-        }
-
+        } catch (_: IndexOutOfBoundsException) { }
     }
 
     fun blockPhone() {
@@ -117,7 +114,18 @@ class BlockingByInputNumActivity : AppCompatActivity() {
                     setMessage("${searchViewModel.currNumFormatted.value} 번호를 발신 차단할까요?")
                     setPositiveButton("확인"
                     ) { _, _ ->
-                            phoneViewModel.blockPhone(PhoneDirEntity(num, searchViewModel.getNameCorrespondingToNumber(num)))
+                        val corrToNumber = searchViewModel.getNameCorrespondingToNumber(num)
+                        phoneViewModel.blockPhone(PhoneDirEntity(num, corrToNumber))
+                        if(corrToNumber != "") {
+                            searchViewModel.setPhoneList(
+                                runBlocking {
+                                    CoroutineScope(Dispatchers.IO).async {
+                                        phoneDirViewModel.setPhoneList(this@BlockingByInputNumActivity)
+                                    }.await()
+                                }
+                            )
+                        }
+                        searchViewModel.clearCurrNum()
                     }
                     setNegativeButton("취소"
                     ) { _, _ -> }

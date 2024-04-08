@@ -8,20 +8,20 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.preventmistakes.PhoneDirEntity
 import com.example.preventmistakes.activity.PhoneDetailsActivity
-import com.example.preventmistakes.databinding.ViewHolderBlockPhoneBinding
+import com.example.preventmistakes.databinding.ViewHolderBlockPhoneByDirBinding
 import com.example.preventmistakes.model.Phone
 
-class BlockedPhoneAdapter(
-    private val blockedList: List<PhoneDirEntity>,
+class BlockedPhoneByDirAdapter(
+    private val blockedList: MutableList<PhoneDirEntity>,
     private val context: Context
 )
-    : RecyclerView.Adapter<BlockedPhoneAdapter.ViewHolder>() {
+    : RecyclerView.Adapter<BlockedPhoneByDirAdapter.ViewHolder>() {
 
-    private lateinit var binding: ViewHolderBlockPhoneBinding
+    private lateinit var binding: ViewHolderBlockPhoneByDirBinding
     var selectedItem = -1
 
 
-    inner class ViewHolder(binding: ViewHolderBlockPhoneBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(binding: ViewHolderBlockPhoneByDirBinding) : RecyclerView.ViewHolder(binding.root) {
 
         lateinit var phone: PhoneDirEntity
         private var position = 0
@@ -44,7 +44,7 @@ class BlockedPhoneAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        binding = ViewHolderBlockPhoneBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding = ViewHolderBlockPhoneByDirBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.lifecycleOwner = parent.findViewTreeLifecycleOwner()
         return ViewHolder(binding)
     }

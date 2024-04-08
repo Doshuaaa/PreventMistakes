@@ -8,14 +8,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.preventmistakes.activity.MainActivity
 
 const val NOTIFICATION_ID = 100
 
 
-class NotificationHelper(context: Context) {
+class NotificationHelper(private val context: Context) {
 
     companion object {
         const val CHANNEL_ID = "PreventMistakes00"
@@ -40,7 +39,8 @@ class NotificationHelper(context: Context) {
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
-                .setOngoing(true)
+                .setDeleteIntent( PendingIntent.getBroadcast(context, 0, Intent("delete_notification"),
+                    PendingIntent.FLAG_IMMUTABLE))
         } else {
             NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle("PreventMistakes")
@@ -64,9 +64,7 @@ class NotificationHelper(context: Context) {
 
     fun getNotification(): Notification {
         createChannel()
-        val notification = builder.build()
-        notification.flags = Notification.FLAG_NO_CLEAR
-        return notification
+        return builder.build()
     }
     fun notifyNotification() {
         notificationManager.notify(NOTIFICATION_ID, builder.build())

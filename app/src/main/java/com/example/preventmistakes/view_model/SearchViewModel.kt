@@ -77,4 +77,9 @@ class SearchViewModel : ViewModel() {
         }
         return ""
     }
+
+    fun clearCurrNum() {
+        _currNum.value = ""
+        _currNumFormatted.value = ""
+    }
 }
