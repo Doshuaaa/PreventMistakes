@@ -27,11 +27,9 @@ class BlockedPhoneByDirAdapter(
         private var position = 0
         fun onBind(phone: PhoneDirEntity, position: Int) {
 
-
             this.phone = phone
             this.position = position
             selectedItem = position
-            binding.data = phone
             binding.viewHolder = this
         }
 

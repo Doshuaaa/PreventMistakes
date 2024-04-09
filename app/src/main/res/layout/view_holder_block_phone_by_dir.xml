@@ -4,9 +4,6 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable
-            name="data"
-            type="com.example.preventmistakes.PhoneDirEntity" />
 
         <variable
             name="viewHolder"

@@ -65,11 +65,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        mainViewModel.setIsServiceRunning(mainViewModel.isServiceRunning(this))
+        val isServiceRunning = mainViewModel.isServiceRunning(this)
+        mainViewModel.setIsServiceRunning(isServiceRunning)
+        if(isServiceRunning) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        }
     }
 
     fun onSwitchListener() {
-        mainViewModel.setIsServiceRunning(binding.preventSwitch.isChecked)
+        val isChecked = binding.preventSwitch.isChecked
+        mainViewModel.setIsServiceRunning(isChecked)
+        if(isChecked) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        }
     }
 
     private fun checkPermission() {
