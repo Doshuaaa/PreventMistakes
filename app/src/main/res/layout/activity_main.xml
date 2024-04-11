@@ -16,6 +16,7 @@
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -26,6 +27,14 @@
             android:orientation="vertical"
             android:layout_weight="5"
             android:background="#ffffff">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/tool_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+            </androidx.appcompat.widget.Toolbar>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,101 +76,87 @@
                     android:layout_gravity="center"/>
 
             </LinearLayout>
+        </LinearLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:padding="5dp"
-                android:background="@drawable/shape_round_layout"
-                android:layout_margin="10dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
                     android:onClick="@{() -> activity.goToBlockedPhoneActivity()}">
 
+
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="3"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
                         android:background="#ffffff"
                         android:padding="10dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/blocked_phone" />
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="차단된 연락처"
-                        android:gravity="center"/>
-
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="차단된 연락처" />
                 </LinearLayout>
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#C1BEBE"/>
-
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
                     android:onClick="@{() -> activity.goToPhoneDirActivity()}">
 
+
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
                         android:src="@drawable/phone_dir"
-                        android:layout_weight="3"
+                        android:padding="6dp"
                         android:scaleType="fitCenter"
                         android:background="#ffffff"/>
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="연락처 보기"
-                        android:gravity="center"/>
+                        android:layout_gravity="center"/>
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#C1BEBE"/>
-
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
                     android:onClick="@{() -> activity.goToBlockingByInputNumbActivity()}">
 
+
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="3"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
                         android:background="#ffffff"
-                        android:padding="15dp"
                         android:scaleType="fitCenter"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="0dp"
+                        android:padding="7dp"
                         android:src="@drawable/input_num" />
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="번호 입력으로 차단"
-                        android:gravity="center"/>
-
+                        android:layout_gravity="center"/>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
+
+        </com.google.android.material.navigation.NavigationView>
+        
+
     </androidx.drawerlayout.widget.DrawerLayout>
-
-
 </layout>

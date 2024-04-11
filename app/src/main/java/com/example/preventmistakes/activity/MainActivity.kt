@@ -9,10 +9,13 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.telecom.TelecomManager
+import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.example.preventmistakes.R
@@ -34,15 +37,33 @@ class MainActivity : AppCompatActivity() {
     private val phoneViewModel: PhoneViewModel by viewModels { PhoneViewModelFactory(application) }
     private lateinit var callReceiver: CallReceiver
 
+    private val onBackPressedCallBack: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if(binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.drawerLayout.closeDrawer((GravityCompat.START))
+            } else {
+                onBackPressedDispatcher.onBackPressed()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //checkPermission()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.mainViewModel = mainViewModel
 
         binding.lifecycleOwner = this
         binding.activity = this
+
+        setSupportActionBar(binding.toolBar)
+        with(supportActionBar) {
+            this?.setDisplayShowTitleEnabled(false)
+            this?.setDisplayHomeAsUpEnabled(true)
+            this?.setHomeAsUpIndicator(R.drawable.baseline_dehaze_24)
+        }
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallBack)
 
         callReceiver = CallReceiver()
 
@@ -140,4 +161,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.itemId) {
+            android.R.id.home -> binding.drawerLayout.openDrawer(GravityCompat.START)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }
