@@ -40,21 +40,17 @@
             android:name=".activity.MainActivity"
             android:exported="true">
 
-        </activity>
-        <activity android:name=".activity.PhoneDirActivity" />
-        <activity android:name=".activity.BlockedPhoneActivity" />
-        <activity android:name=".activity.SearchActivity"/>
-        <activity android:name=".activity.BlockingByInputNumActivity"/>
-        <activity android:name=".activity.PermissionCheckActivity"
-            android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".activity.PhoneDirActivity" />
+        <activity android:name=".activity.BlockedPhoneActivity" />
+        <activity android:name=".activity.SearchActivity"/>
+        <activity android:name=".activity.BlockingByInputNumActivity"/>
+        <activity android:name=".activity.PermissionCheckActivity"/>
     </application>
 
 </manifest>

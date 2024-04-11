@@ -1,19 +1,27 @@
 package com.example.preventmistakes.view_model
 
-import android.Manifest
 import android.content.pm.PackageManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class PermissionViewModel : ViewModel() {
 
-    private val _permissionMap =  MutableLiveData<HashMap<String, Int>>()
-    val permissionMap get() = _permissionMap.value!!
+    private var _permissionMap = MutableLiveData<HashMap<String, Int>>()
+    val permissionMap get() = _permissionMap
 
-    init {
-        _permissionMap.value = hashMapOf()
-    }
-    fun setPermissionMap(map: HashMap<String, Int>) {
-        _permissionMap.value = map
+    private var _visibleFlag = MutableLiveData<Boolean>()
+
+    val visibleFlag get() = _visibleFlag
+
+    var firstRequestFlag = true
+
+    fun setVisibleFlag(){
+        for(permission in _permissionMap.value?.toList()!!) {
+            if(permission.second == PackageManager.PERMISSION_DENIED) {
+                _visibleFlag.value = false
+                return
+            }
+        }
+        _visibleFlag.value = true
     }
 }

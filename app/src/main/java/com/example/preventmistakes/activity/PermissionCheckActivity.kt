@@ -1,12 +1,16 @@
 package com.example.preventmistakes.activity
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.example.preventmistakes.R
 import com.example.preventmistakes.databinding.ActivityPermissionCheckBinding
 import com.example.preventmistakes.view_model.PermissionViewModel
@@ -20,23 +24,28 @@ class PermissionCheckActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_permission_check)
 
         with(binding) {
-            viewModel = this.viewModel
+            viewModel = this@PermissionCheckActivity.viewModel
             lifecycleOwner = this@PermissionCheckActivity
+            activity = this@PermissionCheckActivity
         }
-        checkPermission()
+        viewModel.permissionMap.observe(this, Observer {
+            viewModel.setVisibleFlag()
+        })
+
     }
 
     override fun onResume() {
         super.onResume()
+        checkPermission()
     }
 
     private fun checkPermission() {
         val deniedPermission: ArrayList<String> = arrayListOf()
         val essentialPermissions = hashMapOf<String, String>()
-        val map = hashMapOf<String, Int>()
         essentialPermissions["PROCESS_OUTGOING_CALLS"] = Manifest.permission.PROCESS_OUTGOING_CALLS
         essentialPermissions["ANSWER_PHONE_CALLS"] = Manifest.permission.ANSWER_PHONE_CALLS
         essentialPermissions["READ_CONTACTS"] = Manifest.permission.READ_CONTACTS
+        val map: HashMap<String, Int> = hashMapOf()
 
         for(permission in essentialPermissions) {
             if(ContextCompat.checkSelfPermission(this, permission.value) == PackageManager.PERMISSION_DENIED) {
@@ -46,27 +55,22 @@ class PermissionCheckActivity : AppCompatActivity() {
                 map[permission.key] = PackageManager.PERMISSION_GRANTED
             }
         }
+        viewModel.permissionMap.value = map
 
-        viewModel.setPermissionMap(map)
-
-        if(deniedPermission.size > 0) {
+        if(deniedPermission.size > 0 && viewModel.firstRequestFlag) {
             requestPermissions(deniedPermission.toTypedArray(), REQUEST_PERMISSIONS)
+            viewModel.firstRequestFlag = false
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    fun goToSetPermission() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:${this.packageName}"))
+        startActivity(intent)
+    }
 
-        for(i in grantResults.indices) {
-            if(grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-
-            } else {
-
-            }
-        }
+    fun goToStart() {
+        val intent = Intent(this, MainActivity::class.java)
+        finish()
+        startActivity(intent)
     }
 }

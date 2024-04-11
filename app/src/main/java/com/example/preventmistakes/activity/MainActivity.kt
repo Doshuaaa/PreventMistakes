@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        checkPermission()
+        //checkPermission()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.mainViewModel = mainViewModel
 
@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        checkPermission()
         val isServiceRunning = mainViewModel.isServiceRunning(this)
         mainViewModel.setIsServiceRunning(isServiceRunning)
         if(isServiceRunning) {
@@ -85,35 +86,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermission() {
+        val essentialPermissions = hashMapOf<String, String>()
+        essentialPermissions["PROCESS_OUTGOING_CALLS"] = Manifest.permission.PROCESS_OUTGOING_CALLS
+        essentialPermissions["ANSWER_PHONE_CALLS"] = Manifest.permission.ANSWER_PHONE_CALLS
+        essentialPermissions["READ_CONTACTS"] = Manifest.permission.READ_CONTACTS
+        val map: HashMap<String, Int> = hashMapOf()
 
-        val permissions = mutableMapOf<String, String>()
-        permissions["phone"] = Manifest.permission.ANSWER_PHONE_CALLS
-        permissions["read"] = Manifest.permission.READ_CONTACTS
-
-        val denied = permissions.count { ContextCompat.checkSelfPermission(this, it.value ) == PackageManager.PERMISSION_DENIED }
-
-        if(denied > 0) {
-            requestPermissions(permissions.values.toTypedArray(), REQUEST_PERMISSIONS)
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        for (i in grantResults.indices) {
-
-            if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                when (i) {
-                    0 -> mainViewModel.setPermissionVisibility("phone", View.VISIBLE)
-                    1 -> mainViewModel.setPermissionVisibility("read", View.VISIBLE)
-                }
+        for(permission in essentialPermissions) {
+            if(ContextCompat.checkSelfPermission(this, permission.value) == PackageManager.PERMISSION_DENIED) {
+                val intent = Intent(this, PermissionCheckActivity::class.java)
+                finish()
+                startActivity(intent)
+                return
             }
         }
     }
+
+
 
     fun goToPhoneDirActivity() {
         val intent = Intent(this, PhoneDirActivity::class.java)
