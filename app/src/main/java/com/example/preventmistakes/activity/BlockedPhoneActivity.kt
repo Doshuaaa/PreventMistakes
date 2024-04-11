@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.preventmistakes.R
 import com.example.preventmistakes.adapter.BlockedPhoneByDirAdapter
@@ -27,9 +29,11 @@ class BlockedPhoneActivity : AppCompatActivity() {
         binding.apply {
             blockedPhoneRecyclerView.adapter = blockedPhoneByDirAdapter
             blockedPhoneRecyclerView.layoutManager = LinearLayoutManager(this@BlockedPhoneActivity)
+            blockedPhoneRecyclerView.addItemDecoration(DividerItemDecoration(this@BlockedPhoneActivity, VERTICAL))
 
             blockedPhoneByNumberRecyclerView.adapter = blockedPhoneByNumberAdapter
             blockedPhoneByNumberRecyclerView.layoutManager = LinearLayoutManager(this@BlockedPhoneActivity)
+            blockedPhoneByNumberRecyclerView.addItemDecoration(DividerItemDecoration(this@BlockedPhoneActivity, VERTICAL))
         }
     }
 

@@ -50,6 +50,7 @@ class PhoneDirViewModel(application: Application) : ViewModel() {
     }
 
     fun confirmPhoneList(numberList: ArrayList<Phone>) {
+
         _phoneList.value = numberList
     }
 

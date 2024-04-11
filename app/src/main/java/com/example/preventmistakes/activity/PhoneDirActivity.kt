@@ -99,7 +99,7 @@ class PhoneDirActivity : AppCompatActivity() {
                 phoneDirAdapter.addBtnActivated  = true
             }
         }
-        phoneDirAdapter.notifyDataSetChanged()
+        phoneDirAdapter.notifyItemRangeChanged(0, phoneList.size - 1)
 
     }
 
