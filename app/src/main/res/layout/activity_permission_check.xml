@@ -17,7 +17,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -167,7 +168,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:background="@drawable/baseline_cancel_24"
+                    android:background="@{viewModel.notificationPermission == PackageManager.PERMISSION_GRANTED ? @drawable/baseline_check_24 : @drawable/baseline_cancel_24, default = @drawable/baseline_cancel_24}"
                     android:layout_margin="10dp"/>
             </LinearLayout>
         </LinearLayout>

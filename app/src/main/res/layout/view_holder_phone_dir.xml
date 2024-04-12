@@ -4,6 +4,8 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="android.telephony.PhoneNumberUtils"/>
+        <import type="java.util.Locale"/>
         <variable
             name="data"
             type="com.example.preventmistakes.model.Phone" />
@@ -19,19 +21,18 @@
         <variable
             name="showCheckBox"
             type="java.lang.Boolean" />
-
     </data>
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
+        android:weightSum="3"
         android:onClick="@{() -> viewHolder.layoutListener()}">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:orientation="vertical">
@@ -47,8 +48,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@{data.number}"
-                android:textSize="18sp" />
+                android:text="@{PhoneNumberUtils.formatNumber(data.number, Locale.getDefault().country)}"
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -76,8 +77,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:visibility="@{showCheckBox ? View.VISIBLE : View.GONE, default=gone}" />
+                android:visibility="@{showCheckBox ? View.VISIBLE : View.GONE, default=gone}"
+                android:onCheckedChanged="@{() -> viewHolder.onCheckedChanged()}"/>
         </LinearLayout>
     </LinearLayout>
-
 </layout>

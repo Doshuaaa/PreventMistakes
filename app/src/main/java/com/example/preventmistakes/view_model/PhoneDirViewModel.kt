@@ -12,6 +12,7 @@ import com.example.preventmistakes.model.Phone
 class PhoneDirViewModel(application: Application) : ViewModel() {
 
     private val _phoneList = MutableLiveData<List<Phone>>()
+    lateinit var checkList: MutableList<Boolean>
 
     val phoneList get() = _phoneList
     private val repository = PhoneRepository(application)
@@ -52,6 +53,8 @@ class PhoneDirViewModel(application: Application) : ViewModel() {
     fun confirmPhoneList(numberList: ArrayList<Phone>) {
 
         _phoneList.value = numberList
+        checkList = MutableList((_phoneList.value as ArrayList<Phone>).size) { false }
+
     }
 
     fun updatePhone(number: String): Boolean {

@@ -4,6 +4,8 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="android.telephony.PhoneNumberUtils"/>
+        <import type="java.util.Locale"/>
         <variable
             name="data"
             type="com.example.preventmistakes.PhoneDirEntity" />
@@ -32,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@{data.phoneNumber}"
+                android:text="@{PhoneNumberUtils.formatNumber(data.phoneNumber, Locale.getDefault().country)}"
                 android:textSize="18sp" />
 
         </LinearLayout>

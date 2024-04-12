@@ -7,7 +7,11 @@ import androidx.lifecycle.ViewModel
 class PermissionViewModel : ViewModel() {
 
     private var _permissionMap = MutableLiveData<HashMap<String, Int>>()
+    private var _notificationPermission = MutableLiveData<Int>()
+
     val permissionMap get() = _permissionMap
+    val notificationPermission get() = _notificationPermission
+
 
     private var _visibleFlag = MutableLiveData<Boolean>()
 

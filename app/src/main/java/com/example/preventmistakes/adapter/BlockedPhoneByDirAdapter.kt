@@ -2,6 +2,7 @@ package com.example.preventmistakes.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.telephony.PhoneNumberUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -10,6 +11,7 @@ import com.example.preventmistakes.PhoneDirEntity
 import com.example.preventmistakes.activity.PhoneDetailsActivity
 import com.example.preventmistakes.databinding.ViewHolderBlockPhoneByDirBinding
 import com.example.preventmistakes.model.Phone
+import java.util.Locale
 
 class BlockedPhoneByDirAdapter(
     private val blockedList: MutableList<PhoneDirEntity>,
@@ -54,7 +56,7 @@ class BlockedPhoneByDirAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.name.text = blockedList[position].name
-        holder.binding.number.text = blockedList[position].phoneNumber
+        holder.binding.number.text = PhoneNumberUtils.formatNumber(blockedList[position].phoneNumber, Locale.getDefault().country)
         holder.onBind(blockedList[position], position)
     }
 }

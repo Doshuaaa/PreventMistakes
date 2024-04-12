@@ -4,9 +4,11 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -15,6 +17,7 @@ import com.example.preventmistakes.R
 import com.example.preventmistakes.databinding.ActivityPermissionCheckBinding
 import com.example.preventmistakes.view_model.PermissionViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class PermissionCheckActivity : AppCompatActivity() {
 
     private val viewModel: PermissionViewModel by viewModels()
@@ -39,6 +42,7 @@ class PermissionCheckActivity : AppCompatActivity() {
         checkPermission()
     }
 
+
     private fun checkPermission() {
         val deniedPermission: ArrayList<String> = arrayListOf()
         val essentialPermissions = hashMapOf<String, String>()
@@ -60,6 +64,16 @@ class PermissionCheckActivity : AppCompatActivity() {
         if(deniedPermission.size > 0 && viewModel.firstRequestFlag) {
             requestPermissions(deniedPermission.toTypedArray(), REQUEST_PERMISSIONS)
             viewModel.firstRequestFlag = false
+        }
+
+        val isNotificationDenied
+        = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED
+
+        if(isNotificationDenied) {
+            viewModel.notificationPermission.value = PackageManager.PERMISSION_DENIED
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_PERMISSIONS)
+        } else {
+            viewModel.notificationPermission.value = PackageManager.PERMISSION_GRANTED
         }
     }
 

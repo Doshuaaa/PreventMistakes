@@ -13,8 +13,9 @@ import com.example.preventmistakes.view_model.PhoneViewModel
 
 class PhoneDirAdapter(
     val phoneList: MutableList<Phone>,
-    private val phoneViewModel: PhoneViewModel,
-    private val context: Context)
+    private val checkList: MutableList<Boolean>,
+    private val context: Context
+)
     : RecyclerView.Adapter<PhoneDirAdapter.ViewHolder>() {
 
     private lateinit var binding: ViewHolderPhoneDirBinding
@@ -49,7 +50,6 @@ class PhoneDirAdapter(
                 }
             } else {
                 if(binding.blockCheckBox.isChecked) {
-                    phoneViewModel.blockPhone(PhoneDirEntity(phone.number, phone.name))
                     binding.blocked = true               // xml에 표시하기 위함
                     phoneList[position].blocked = true   // details activity에 전달하기 위함
                     binding.blockCheckBox.isChecked = false
@@ -58,6 +58,10 @@ class PhoneDirAdapter(
             }
         }
 
+        fun onCheckedChanged() {
+
+            checkList[position] = binding.blockCheckBox.isChecked
+        }
         fun layoutListener() {
             prefs.edit().putInt("changeable_phone_index", phone.index).apply()
             //selectedItem = position

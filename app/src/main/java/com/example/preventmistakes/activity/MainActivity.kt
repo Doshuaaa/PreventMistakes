@@ -26,6 +26,12 @@ import com.example.preventmistakes.service.ServiceState
 import com.example.preventmistakes.view_model.MainViewModel
 import com.example.preventmistakes.view_model.PhoneViewModel
 import com.example.preventmistakes.view_model.PhoneViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.lang.IllegalArgumentException
 
 const val REQUEST_PERMISSIONS = 1
@@ -64,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallBack)
-
+        binding.drawerLayout.close()
         callReceiver = CallReceiver()
 
         mainViewModel.isServiceRunning.observe(this, Observer {
@@ -96,6 +102,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        if(binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START, false)
+        }
+    }
+
     fun onSwitchListener() {
         val isChecked = binding.preventSwitch.isChecked
         mainViewModel.setIsServiceRunning(isChecked)
@@ -111,7 +124,6 @@ class MainActivity : AppCompatActivity() {
         essentialPermissions["PROCESS_OUTGOING_CALLS"] = Manifest.permission.PROCESS_OUTGOING_CALLS
         essentialPermissions["ANSWER_PHONE_CALLS"] = Manifest.permission.ANSWER_PHONE_CALLS
         essentialPermissions["READ_CONTACTS"] = Manifest.permission.READ_CONTACTS
-        val map: HashMap<String, Int> = hashMapOf()
 
         for(permission in essentialPermissions) {
             if(ContextCompat.checkSelfPermission(this, permission.value) == PackageManager.PERMISSION_DENIED) {
@@ -122,8 +134,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 
     fun goToPhoneDirActivity() {
         val intent = Intent(this, PhoneDirActivity::class.java)

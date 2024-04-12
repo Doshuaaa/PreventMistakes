@@ -8,7 +8,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.preventmistakes.PhoneDirEntity
 import com.example.preventmistakes.R
 import com.example.preventmistakes.adapter.PhoneDirAdapter
 import com.example.preventmistakes.databinding.ActivityPhoneDirBinding
@@ -29,43 +32,28 @@ class PhoneDirActivity : AppCompatActivity() {
     private lateinit var phoneDirAdapter: PhoneDirAdapter
     private val phoneList: MutableList<Phone> by lazy { phoneDirViewModel.phoneList.value?.toMutableList()!! }
     private val prefs: SharedPreferences by lazy { getSharedPreferences("changeable_data", Context.MODE_PRIVATE) }
-
+    private val phoneViewModel by lazy { PhoneViewModel(this.application) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val phoneViewModel = PhoneViewModel(this.application)
-
-        runBlocking {
-            var numberList = arrayListOf<Phone>()
-            CoroutineScope(Dispatchers.IO).launch {
-                numberList = phoneDirViewModel.setPhoneList(this@PhoneDirActivity)
-            }.join()
-            phoneDirViewModel.confirmPhoneList(numberList)
-        }
-
+        initPhoneList()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_phone_dir)
         binding.lifecycleOwner = this
         binding.activity = this
-        phoneDirAdapter = PhoneDirAdapter(phoneList, phoneViewModel, this)
+        phoneDirAdapter = PhoneDirAdapter(phoneList, phoneDirViewModel.checkList, this)
+
 
         binding.phoneDirRecyclerView.apply {
 
             adapter = phoneDirAdapter
             layoutManager = LinearLayoutManager(this@PhoneDirActivity)
+            addItemDecoration(DividerItemDecoration(this@PhoneDirActivity, VERTICAL))
         }
     }
 
     override fun onResume() {
         super.onResume()
-
-//        if(phoneDirAdapter.selectedItem != -1) {
-//
-//            modifyPhoneListBlocked()
-//
-//            phoneDirAdapter.notifyItemChanged(phoneDirAdapter.selectedItem)
-//            phoneDirAdapter.selectedItem = -1
-//        }
 
         val index = prefs.getInt("changeable_phone_index", -1)
 
@@ -73,6 +61,16 @@ class PhoneDirActivity : AppCompatActivity() {
             modifyPhoneListBlocked(index)
             phoneDirAdapter.notifyItemChanged(index)
             prefs.edit().putInt("changeable_phone_index", -1).apply()
+        }
+    }
+
+    private fun initPhoneList() {
+        runBlocking {
+            var numberList = arrayListOf<Phone>()
+            CoroutineScope(Dispatchers.IO).launch {
+                numberList = phoneDirViewModel.setPhoneList(this@PhoneDirActivity)
+            }.join()
+            phoneDirViewModel.confirmPhoneList(numberList)
         }
     }
 
@@ -85,12 +83,12 @@ class PhoneDirActivity : AppCompatActivity() {
         }
     }
 
-
     fun addOrCommitListener() {
         val button = binding.addOrCommitButton
 
         when(phoneDirAdapter.addBtnActivated) {
             true ->  {
+                blockedPhoneByChecking()
                 button.background = ContextCompat.getDrawable(this, R.drawable.baseline_checklist_24)
                 phoneDirAdapter.addBtnActivated  = false
             }
@@ -99,8 +97,16 @@ class PhoneDirActivity : AppCompatActivity() {
                 phoneDirAdapter.addBtnActivated  = true
             }
         }
-        phoneDirAdapter.notifyItemRangeChanged(0, phoneList.size - 1)
+        phoneDirAdapter.notifyDataSetChanged()
+    }
 
+    private fun blockedPhoneByChecking() {
+        for(i in phoneDirViewModel.checkList.indices) {
+            if(phoneDirViewModel.checkList[i]) {
+                phoneViewModel.blockPhone(PhoneDirEntity(phoneDirViewModel.phoneList.value!![i].number, phoneDirViewModel.phoneList.value!![i].name) )
+            }
+        }
+        phoneDirViewModel.checkList.fill(false)
     }
 
     fun goToSearchActivity() {
@@ -109,6 +115,4 @@ class PhoneDirActivity : AppCompatActivity() {
 
         startActivity(intent)
     }
-
-
 }

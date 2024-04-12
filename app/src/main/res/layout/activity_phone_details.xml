@@ -3,6 +3,8 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="android.telephony.PhoneNumberUtils"/>
+        <import type="java.util.Locale"/>
         <variable
             name="activity"
             type="com.example.preventmistakes.activity.PhoneDetailsActivity" />
@@ -15,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@color/white">
 
         <TextView
             android:layout_width="90dp"
@@ -24,17 +27,20 @@
             android:text="@{activity.phone.name.substring(0, 1)}"
             android:textSize="50sp"
             android:textColor="#ffffff"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:layout_marginBottom="15dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{activity.phone.name, default=' '}"/>
+            android:text="@{activity.phone.name, default=' '}"
+            android:layout_marginBottom="3dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{activity.phone.number, default=' '}"/>
+            android:text="@{PhoneNumberUtils.formatNumber(activity.phone.number, Locale.getDefault().country), default=' '}"
+            android:layout_marginBottom="15dp"/>
 
         <FrameLayout
             android:layout_width="match_parent"
