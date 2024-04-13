@@ -51,6 +51,8 @@
         <activity android:name=".activity.SearchActivity"/>
         <activity android:name=".activity.BlockingByInputNumActivity"/>
         <activity android:name=".activity.PermissionCheckActivity"/>
+
+        <receiver android:name=".activity.Receiver"/>
     </application>
 
 </manifest>

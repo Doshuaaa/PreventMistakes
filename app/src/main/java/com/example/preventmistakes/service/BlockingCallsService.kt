@@ -2,7 +2,6 @@ package com.example.preventmistakes.service
 
 
 import android.app.Notification
-import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -10,12 +9,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
 import android.os.Build
-import android.os.Bundle
 import android.os.IBinder
-import androidx.annotation.RequiresApi
 import com.example.preventmistakes.NOTIFICATION_ID
 import com.example.preventmistakes.NotificationHelper
-import java.io.Serializable
 
 const val SERVICE_COMMAND = "service_command"
 
@@ -26,16 +22,18 @@ class BlockingCallsService : Service() {
     private lateinit var notification: Notification
     private lateinit var state: ServiceState
 
-    private val receiver = NotificationCancelReceiver()
+    private val cancelReceiver = ServiceReceiver()
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
         notification = helper.getNotification()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(receiver, IntentFilter("delete_notification"), RECEIVER_EXPORTED)
+            registerReceiver(cancelReceiver, IntentFilter("delete_notification"), RECEIVER_EXPORTED)
+           // registerReceiver(stopServiceReceiver, IntentFilter("stop_service"), RECEIVER_EXPORTED)
         } else {
-            registerReceiver(receiver, IntentFilter("delete_notification"))
+            registerReceiver(cancelReceiver, IntentFilter("delete_notification"))
+          //  registerReceiver(stopServiceReceiver, IntentFilter("stop_service"))
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -70,15 +68,21 @@ class BlockingCallsService : Service() {
     }
 
     private fun stopForegroundService() {
-        unregisterReceiver(receiver)
+        unregisterReceiver(cancelReceiver)
         stopSelf()
     }
 
 
-    inner class NotificationCancelReceiver: BroadcastReceiver() {
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            if(state == ServiceState.START) {
-                helper.notifyNotification()
+    inner class ServiceReceiver: BroadcastReceiver() {
+        override fun onReceive(p0: Context?, intent: Intent) {
+            if(intent.action == "delete_notification") {
+                if(state == ServiceState.START) {
+                    helper.notifyNotification()
+                }
+            }
+            if(intent.action == "stop_service") {
+                unregisterReceiver(this)
+                stopSelf()
             }
         }
     }

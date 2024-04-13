@@ -26,12 +26,6 @@ import com.example.preventmistakes.service.ServiceState
 import com.example.preventmistakes.view_model.MainViewModel
 import com.example.preventmistakes.view_model.PhoneViewModel
 import com.example.preventmistakes.view_model.PhoneViewModelFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.lang.IllegalArgumentException
 
 const val REQUEST_PERMISSIONS = 1
@@ -43,6 +37,10 @@ class MainActivity : AppCompatActivity() {
     private val phoneViewModel: PhoneViewModel by viewModels { PhoneViewModelFactory(application) }
     private lateinit var callReceiver: CallReceiver
 
+    companion object {
+        lateinit var viewModel: MainViewModel
+    }
+
     private val onBackPressedCallBack: OnBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if(binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -53,14 +51,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    val stopActionPrefs by lazy { getSharedPreferences("stop_action_flag", Context.MODE_PRIVATE) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = mainViewModel
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.mainViewModel = mainViewModel
 
         binding.lifecycleOwner = this
         binding.activity = this
+
 
         setSupportActionBar(binding.toolBar)
         with(supportActionBar) {
@@ -93,6 +95,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         checkPermission()
+//        if(stopActionPrefs.getBoolean("flag", false)) {
+//            mainViewModel.isServiceRunning.value = false
+//            stopActionPrefs.edit().putBoolean("flag", true).apply()
+//        }
         val isServiceRunning = mainViewModel.isServiceRunning(this)
         mainViewModel.setIsServiceRunning(isServiceRunning)
         if(isServiceRunning) {
@@ -171,6 +177,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when(item.itemId) {
@@ -179,4 +188,10 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+}
+
+class Receiver : BroadcastReceiver() {
+    override fun onReceive(p0: Context?, p1: Intent?) {
+        MainActivity.viewModel.isServiceRunning.value = false
+    }
 }
