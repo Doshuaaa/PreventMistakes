@@ -24,6 +24,9 @@ class PermissionCheckActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPermissionCheckBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //Current.currWindow = window
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_permission_check)
 
         with(binding) {

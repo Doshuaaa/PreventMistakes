@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.telecom.TelecomManager
 import android.view.MenuItem
-import android.view.View
+import android.view.Window
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
@@ -29,6 +29,8 @@ import com.example.preventmistakes.view_model.PhoneViewModelFactory
 import java.lang.IllegalArgumentException
 
 const val REQUEST_PERMISSIONS = 1
+
+lateinit var currWindow: Window
 
 class MainActivity : AppCompatActivity() {
 
@@ -55,9 +57,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         viewModel = mainViewModel
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
         binding.mainViewModel = mainViewModel
 
         binding.lifecycleOwner = this
@@ -75,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.close()
         callReceiver = CallReceiver()
 
-        mainViewModel.isServiceRunning.observe(this, Observer {
+        mainViewModel.isServiceRunning.observeForever(Observer {
             val intent = Intent(this, BlockingCallsService::class.java)
             if(it) {
                 val filter = IntentFilter("android.intent.action.NEW_OUTGOING_CALL")
@@ -94,11 +98,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         checkPermission()
-//        if(stopActionPrefs.getBoolean("flag", false)) {
-//            mainViewModel.isServiceRunning.value = false
-//            stopActionPrefs.edit().putBoolean("flag", true).apply()
-//        }
+
         val isServiceRunning = mainViewModel.isServiceRunning(this)
         mainViewModel.setIsServiceRunning(isServiceRunning)
         if(isServiceRunning) {
@@ -190,8 +192,3 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-class Receiver : BroadcastReceiver() {
-    override fun onReceive(p0: Context?, p1: Intent?) {
-        MainActivity.viewModel.isServiceRunning.value = false
-    }
-}

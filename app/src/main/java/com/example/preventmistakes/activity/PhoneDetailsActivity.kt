@@ -25,6 +25,8 @@ class PhoneDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+       // Current.currWindow = window
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_phone_details)
         binding.apply {
             activity = this@PhoneDetailsActivity

@@ -40,6 +40,7 @@ class BlockingByInputNumActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         searchViewModel.setPhoneList(
             runBlocking {
                 CoroutineScope(Dispatchers.IO).async {
@@ -48,6 +49,7 @@ class BlockingByInputNumActivity : AppCompatActivity() {
             }
         )
         binding = DataBindingUtil.setContentView(this, R.layout.activity_blocking_by_input_num)
+        currWindow = window
         with(binding) {
             searchViewModel = this@BlockingByInputNumActivity.searchViewModel
             lifecycleOwner = this@BlockingByInputNumActivity

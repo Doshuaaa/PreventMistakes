@@ -30,8 +30,9 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val phoneList = intent.intentSerializable("phone_dir_list", Array<Phone>::class.java)!!.toList()
+   //     Current.currWindow = window
 
+        val phoneList = intent.intentSerializable("phone_dir_list", Array<Phone>::class.java)!!.toList()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search)
         searchViewModel.apply {

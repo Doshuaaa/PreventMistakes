@@ -36,6 +36,7 @@ class PhoneDirActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+    //    Current.currWindow = window
         initPhoneList()
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_phone_dir)

@@ -23,13 +23,28 @@ class BlockedPhoneActivity : AppCompatActivity() {
     private lateinit var blockedPhoneByDirAdapter: BlockedPhoneByDirAdapter
     private lateinit var blockedPhoneByNumberAdapter: BlockedPhoneByNumberAdapter
 
-    private val mainViewModel: MainViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ////////
 
+        val isServiceRunning = MainActivity.viewModel.isServiceRunning(this)
+        MainActivity.viewModel.setIsServiceRunning(isServiceRunning)
+        if(isServiceRunning) {
+
+            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        }
+
+
+        ////////
         binding = DataBindingUtil.setContentView(this, R.layout.activity_blocked_phone)
+        currWindow = window
+        if(currWindow == null) {
+            val a = 3
+        }
+
         blockedPhoneByDirAdapter = BlockedPhoneByDirAdapter(blockedPhoneViewModel.blockedPhoneByDirList, this)
         blockedPhoneByNumberAdapter = BlockedPhoneByNumberAdapter(blockedPhoneViewModel.blockedPhoneByNumberList.toMutableList(), blockedPhoneViewModel, this)
         binding.apply {
@@ -49,14 +64,14 @@ class BlockedPhoneActivity : AppCompatActivity() {
             blockedPhoneViewModel.updateBlockedPhone(blockedPhoneByDirAdapter, blockedPhoneByDirAdapter.selectedItem)
         }
 
-        val isServiceRunning = mainViewModel.isServiceRunning(this)
-        mainViewModel.setIsServiceRunning(isServiceRunning)
-        if(isServiceRunning) {
-
-            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
-        } else {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
-        }
+//        val isServiceRunning = MainActivity.viewModel.isServiceRunning(this)
+//        MainActivity.viewModel.setIsServiceRunning(isServiceRunning)
+//        if(isServiceRunning) {
+//
+//            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+//        } else {
+//            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+//        }
     }
 
 }
