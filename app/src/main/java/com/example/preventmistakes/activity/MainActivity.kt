@@ -1,6 +1,7 @@
 package com.example.preventmistakes.activity
 
 import android.Manifest
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -48,25 +49,26 @@ class MainActivity : AppCompatActivity() {
             if(binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 binding.drawerLayout.closeDrawer((GravityCompat.START))
             } else {
-                onBackPressedDispatcher.onBackPressed()
+                if(viewModel.isServiceRunning(this@MainActivity)) {
+                    moveTaskToBack(true);
+                } else {
+                    finish()
+                }
             }
         }
     }
 
-    val stopActionPrefs by lazy { getSharedPreferences("stop_action_flag", Context.MODE_PRIVATE) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel = mainViewModel
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        binding.mainViewModel = mainViewModel
-
-        binding.lifecycleOwner = this
-        binding.activity = this
-
+        binding.let {
+            it.mainViewModel = mainViewModel
+            it.lifecycleOwner = this
+            it.activity = this
+        }
 
         setSupportActionBar(binding.toolBar)
         with(supportActionBar) {
@@ -76,8 +78,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallBack)
-        binding.drawerLayout.close()
         callReceiver = CallReceiver()
+
+        val isServiceRunning = viewModel.isServiceRunning(this)
+        viewModel.setIsServiceRunning(isServiceRunning)
 
         mainViewModel.isServiceRunning.observeForever(Observer {
             val intent = Intent(this, BlockingCallsService::class.java)
@@ -99,15 +103,15 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        checkPermission()
-
-        val isServiceRunning = mainViewModel.isServiceRunning(this)
-        mainViewModel.setIsServiceRunning(isServiceRunning)
+        val isServiceRunning = viewModel.isServiceRunning(this)
+        currWindow = window
         if(isServiceRunning) {
             window.statusBarColor = ContextCompat.getColor(this, R.color.red)
         } else {
             window.statusBarColor = ContextCompat.getColor(this, R.color.white)
         }
+
+        checkPermission()
     }
 
     override fun onStop() {
@@ -118,12 +122,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onSwitchListener() {
-        val isChecked = binding.preventSwitch.isChecked
-        mainViewModel.setIsServiceRunning(isChecked)
-        if(isChecked) {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
-        } else {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        if(binding.preventSwitch.isPressed) {
+            val isChecked = binding.preventSwitch.isChecked
+            mainViewModel.setIsServiceRunning(isChecked)
+            if(isChecked) {
+                window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+            } else {
+                window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+            }
         }
     }
 
@@ -179,8 +185,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 

@@ -27,15 +27,12 @@ class NotificationHelper(private val context: Context) {
         pushIntent,
         PendingIntent.FLAG_IMMUTABLE,
     )
-   // private val stopIntent = Intent(context, BlockingCallsService.StopServiceReceiver::class.java)
-
 
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val builder: NotificationCompat.Builder by lazy {
 
-       // stopIntent.action = "stop_service"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            //context.registerReceiver(MainActivity().Receiver(), IntentFilter("stop_service"), Service.RECEIVER_EXPORTED)
+
             NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle("PreventMistakes")
                 .setContentText("발신 차단 실행중")
@@ -74,5 +71,4 @@ class NotificationHelper(private val context: Context) {
     fun notifyNotification() {
         notificationManager.notify(NOTIFICATION_ID, builder.build())
     }
-
 }

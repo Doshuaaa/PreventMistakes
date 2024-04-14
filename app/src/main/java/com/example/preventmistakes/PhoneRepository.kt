@@ -52,13 +52,6 @@ class PhoneRepository(application: Application) {
 
     fun unblockPhone(phone: PhoneDirEntity) {
 
-//        try {
-//            val thread = Thread(Runnable {
-//                phoneDao.unblockPhone(phone)
-//            })
-//            thread.start()
-//        } catch (_: Exception) { }
-
         CoroutineScope(Dispatchers.IO).launch {
             phoneDao.unblockPhone(phone)
         }

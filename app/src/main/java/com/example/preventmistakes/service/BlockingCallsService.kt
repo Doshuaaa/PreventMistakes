@@ -37,33 +37,32 @@ class BlockingCallsService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(cancelReceiver, IntentFilter("delete_notification"), RECEIVER_EXPORTED)
             registerReceiver(cancelReceiver, IntentFilter("stop_service"), RECEIVER_EXPORTED)
-           // registerReceiver(stopServiceReceiver, IntentFilter("stop_service"), RECEIVER_EXPORTED)
-        } else {
-            registerReceiver(cancelReceiver, IntentFilter("delete_notification"))
-            registerReceiver(cancelReceiver, IntentFilter("stop_service"))
-          //  registerReceiver(stopServiceReceiver, IntentFilter("stop_service"))
-        }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val state = intent.extras?.getSerializable(SERVICE_COMMAND, ServiceState::class.java)
             this.state = state!!
             when(state) {
-                ServiceState.START -> { startForegroundService() }
-                ServiceState.STOP -> { stopForegroundService() }
-                else -> { stopForegroundService() }
+                ServiceState.START -> {
+                    startForegroundService()
+                }
+
+                ServiceState.STOP -> {
+                    stopForegroundService()
+                }
             }
         } else {
-            val state = intent.extras?.getSerializable(SERVICE_COMMAND) as ServiceState
-            this.state = state
-            when(state) {
-                ServiceState.START -> { startForegroundService() }
-                ServiceState.STOP -> { stopForegroundService() }
-            }
+            registerReceiver(cancelReceiver, IntentFilter("delete_notification"))
+            registerReceiver(cancelReceiver, IntentFilter("stop_service"))
+
+                val state = intent.extras?.getSerializable(SERVICE_COMMAND) as ServiceState
+                this.state = state
+                when(state) {
+                    ServiceState.START -> { startForegroundService() }
+                    ServiceState.STOP -> { stopForegroundService() }
+                }
         }
 
         return START_STICKY
     }
-
 
     private fun startForegroundService() {
 
@@ -80,8 +79,7 @@ class BlockingCallsService : Service() {
         stopSelf()
     }
 
-
-    inner class ServiceReceiver: BroadcastReceiver() {
+    inner class ServiceReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if(intent.action == "delete_notification") {
                 if(state == ServiceState.START) {
@@ -89,26 +87,16 @@ class BlockingCallsService : Service() {
                 }
             }
             if(intent.action == "stop_service") {
-                MainActivity.viewModel.isServiceRunning.value = false
+                MainActivity.viewModel.setIsServiceRunning(false)
                 setStatusBar(context)
-
+                unregisterReceiver(this)
             }
         }
 
         private fun setStatusBar(context: Context) {
-            val isServiceRunning = MainActivity.viewModel.isServiceRunning(context)
-            MainActivity.viewModel.setIsServiceRunning(isServiceRunning)
-            if(currWindow == null) {
-                val a = 3
-            }
-            if(isServiceRunning) {
-                currWindow?.statusBarColor = ContextCompat.getColor(context, R.color.red)
-            } else {
-                currWindow?.statusBarColor = ContextCompat.getColor(context, R.color.white)
-            }
+            currWindow.statusBarColor = ContextCompat.getColor(context, R.color.white)
         }
     }
-
 
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")

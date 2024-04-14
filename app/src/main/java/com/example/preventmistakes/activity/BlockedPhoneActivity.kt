@@ -26,24 +26,8 @@ class BlockedPhoneActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ////////
 
-        val isServiceRunning = MainActivity.viewModel.isServiceRunning(this)
-        MainActivity.viewModel.setIsServiceRunning(isServiceRunning)
-        if(isServiceRunning) {
-
-            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
-        } else {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
-        }
-
-
-        ////////
         binding = DataBindingUtil.setContentView(this, R.layout.activity_blocked_phone)
-        currWindow = window
-        if(currWindow == null) {
-            val a = 3
-        }
 
         blockedPhoneByDirAdapter = BlockedPhoneByDirAdapter(blockedPhoneViewModel.blockedPhoneByDirList, this)
         blockedPhoneByNumberAdapter = BlockedPhoneByNumberAdapter(blockedPhoneViewModel.blockedPhoneByNumberList.toMutableList(), blockedPhoneViewModel, this)
@@ -60,18 +44,17 @@ class BlockedPhoneActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        val isServiceRunning = MainActivity.viewModel.isServiceRunning(this)
+        currWindow = window
+        if(isServiceRunning) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        }
+
         if(blockedPhoneByDirAdapter.selectedItem != -1) {
             blockedPhoneViewModel.updateBlockedPhone(blockedPhoneByDirAdapter, blockedPhoneByDirAdapter.selectedItem)
         }
-
-//        val isServiceRunning = MainActivity.viewModel.isServiceRunning(this)
-//        MainActivity.viewModel.setIsServiceRunning(isServiceRunning)
-//        if(isServiceRunning) {
-//
-//            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
-//        } else {
-//            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
-//        }
     }
-
 }

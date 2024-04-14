@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import com.example.preventmistakes.PhoneDirEntity
@@ -25,8 +26,6 @@ class PhoneDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-       // Current.currWindow = window
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_phone_details)
         binding.apply {
             activity = this@PhoneDetailsActivity
@@ -36,7 +35,18 @@ class PhoneDetailsActivity : AppCompatActivity() {
 
         phone = intent.intentSerializable("selected_phone", Phone::class.java)!!
         phoneDetailsViewModel.setBlocked(phone.blocked)
+    }
 
+    override fun onResume() {
+        super.onResume()
+
+        val isServiceRunning = MainActivity.viewModel.isServiceRunning(this)
+        currWindow = window
+        if(isServiceRunning) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        }
     }
 
     fun blockPhone() {

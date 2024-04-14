@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -90,6 +91,13 @@ class BlockingByInputNumActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        val isServiceRunning = MainActivity.viewModel.isServiceRunning(this)
+        currWindow = window
+        if(isServiceRunning) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        }
 
         val index = prefs.getInt("changeable_phone_index", -1)
 

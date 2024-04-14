@@ -36,7 +36,8 @@ class SearchViewModel : ViewModel() {
             text.toInt()
             for(phone in _phoneList) {
                 if(phone.number.contains(text)) {
-                    list.add(PhonePosition(phone, phone.name.indexOf(text)))
+
+                    list.add(PhonePosition(phone, phone.number.indexOf(text)))
                 }
             }
 

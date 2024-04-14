@@ -28,10 +28,8 @@ abstract class PhoneDataBase : RoomDatabase() {
             }
             return instance
         }
-
         fun destroyInstance() {
             instance = null
         }
-
     }
 }

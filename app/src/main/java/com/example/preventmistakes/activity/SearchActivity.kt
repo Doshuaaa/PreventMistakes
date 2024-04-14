@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.preventmistakes.R
@@ -29,8 +30,6 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-   //     Current.currWindow = window
 
         val phoneList = intent.intentSerializable("phone_dir_list", Array<Phone>::class.java)!!.toList()
 
@@ -69,6 +68,15 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        val isServiceRunning = MainActivity.viewModel.isServiceRunning(this)
+        currWindow = window
+        if(isServiceRunning) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.red)
+        } else {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+        }
+        
         if(searchAdapter.selectedPosition != -1) {
             resetPhone()
             searchAdapter.notifyItemChanged(searchAdapter.selectedPosition)
